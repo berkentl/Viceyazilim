@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Navbar } from "@/components/layout/Navbar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,13 +15,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://viceyazilim.com"),
-  title: "Vice Yazılım — Çok Yakında",
+  title: "Vice Yazılım — Web Tasarım ve E-Ticaret Ajansı",
   description:
-    "Vice Yazılım'ın yeni web sitesi üzerinde çalışıyoruz. Marka, ürün ve yazılımı bir araya getiren deneyim çok yakında viceyazilim.com'da.",
+    "Vice Yazılım; profesyonel web tasarımı, özel yazılım geliştirme ve e-ticaret çözümleriyle markanızı dijitalde en iyi hâliyle inşa eder.",
   openGraph: {
-    title: "Vice Yazılım — Çok Yakında",
+    title: "Vice Yazılım — Web Tasarım ve E-Ticaret Ajansı",
     description:
-      "Vice Yazılım'ın yeni web sitesi üzerinde çalışıyoruz. Çok yakında viceyazilim.com'da.",
+      "Profesyonel web tasarımı, özel yazılım geliştirme ve e-ticaret çözümleri.",
     url: "https://viceyazilim.com",
     siteName: "Vice Yazılım",
     locale: "tr_TR",
@@ -44,6 +45,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-bg text-fg">
         <div className="grain-overlay" aria-hidden="true" />
+        <Navbar />
         {children}
       </body>
     </html>
