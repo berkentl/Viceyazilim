@@ -1,6 +1,8 @@
 import { Hero } from "@/components/home/Hero";
 import { ScrollRevealText } from "@/components/home/ScrollRevealText";
 import { ServicesStrip } from "@/components/home/ServicesStrip";
+import { ReferencesPreview } from "@/components/home/ReferencesPreview";
+import { StatementBanner } from "@/components/home/StatementBanner";
 import { TrustBanner } from "@/components/home/TrustBanner";
 
 export default function Home() {
@@ -11,6 +13,8 @@ export default function Home() {
         <ScrollRevealText text="Bir web sitesi sadece bir vitrin değildir; markanızın dijitaldeki sesi, güveni ve büyüme motorudur." />
       </section>
       <ServicesStrip />
+      <ReferencesPreview />
+      <StatementBanner />
       <TrustBanner />
     </main>
   );
