@@ -2,12 +2,8 @@
 
 import Image from "next/image";
 import { useRef, type PointerEvent } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 const MAX_TILT_DEG = 6;
 
@@ -21,7 +17,7 @@ export function DeviceMockup({
   alt: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);

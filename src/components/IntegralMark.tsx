@@ -1,12 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { MetalFill } from "./MetalFill";
 import { ROTATE_KEYFRAMES, rotateTransition } from "@/lib/brandMotion";
 
@@ -15,7 +11,7 @@ const MAX_TILT_DEG = 9;
 
 export function IntegralMark() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);

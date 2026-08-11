@@ -43,9 +43,9 @@ export default function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full overflow-x-hidden antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-bg text-fg">
+      <body className="min-h-full flex flex-col overflow-x-hidden bg-bg text-fg">
         <div className="grain-overlay" aria-hidden="true" />
         <AmbientGlow />
         <Navbar />

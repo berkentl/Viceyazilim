@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import type { ReactNode } from "react";
 
 const GLOW_TINTS = {
@@ -24,24 +25,30 @@ export function MotionCard({
   index = 0,
   className = "",
   glow = true,
+  reveal = true,
 }: {
   children: ReactNode;
   tint?: keyof typeof GLOW_TINTS;
   index?: number;
   className?: string;
   glow?: boolean;
+  /** Set false when an outer component (e.g. a GSAP scroll timeline) already
+   * owns the entrance animation — avoids two systems writing to the same
+   * transform. Hover/glow behavior is unaffected either way. */
+  reveal?: boolean;
 }) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
+  const skipReveal = shouldReduceMotion || !reveal;
 
   return (
     <motion.div
       className="group relative h-full"
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
+      initial={skipReveal ? false : { opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{
         duration: 0.7,
-        delay: shouldReduceMotion ? 0 : index * 0.06,
+        delay: skipReveal ? 0 : index * 0.06,
         ease: EASE_OUT_QUART,
       }}
     >

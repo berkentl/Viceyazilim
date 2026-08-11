@@ -3,15 +3,15 @@
 import { useRef } from "react";
 import {
   motion,
-  useReducedMotion,
   useScroll,
   useTransform,
   type MotionValue,
 } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 export function ScrollRevealText({ text }: { text: string }) {
   const containerRef = useRef<HTMLParagraphElement>(null);
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 0.85", "start 0.2"],

@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import type { ReactNode } from "react";
 
 const EASE_OUT_QUART = [0.16, 1, 0.3, 1] as const;
@@ -14,7 +15,7 @@ export function Reveal({
   index?: number;
   className?: string;
 }) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
 
   return (
     <motion.div

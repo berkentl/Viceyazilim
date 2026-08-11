@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { useId, useState, type FormEvent } from "react";
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -174,7 +175,7 @@ function CheckIcon() {
 }
 
 function Spinner() {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
   return (
     <motion.svg
       viewBox="0 0 16 16"

@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 const METAL_GRADIENT =
   "linear-gradient(135deg, #ffffff 0%, #f2f3f5 32%, #dfe1e5 58%, #c3c6cc 78%, #a3a6ad 100%)";
@@ -22,7 +23,7 @@ const MASK_STYLE = {
  * parent's 180° rotation loop.
  */
 export function MetalFill({ maskSrc }: { maskSrc: string }) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
 
   const maskImage = {
     WebkitMaskImage: `url(${maskSrc})`,

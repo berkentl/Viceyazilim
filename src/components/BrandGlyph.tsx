@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { MetalFill } from "./MetalFill";
 import { ROTATE_KEYFRAMES, rotateTransition } from "@/lib/brandMotion";
 
@@ -21,7 +22,7 @@ export function BrandGlyph({
    * the rotation before that FLIP has settled is what caused the visual glitch. */
   rotateDelay?: number | false;
 }) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
   const rotate = rotateDelay !== false && !shouldReduceMotion;
 
   return (

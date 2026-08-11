@@ -1,17 +1,22 @@
 import { Hero } from "@/components/home/Hero";
 import { ScrollRevealText } from "@/components/home/ScrollRevealText";
+import { PinnedShowcase } from "@/components/home/PinnedShowcase";
 import { ServicesStrip } from "@/components/home/ServicesStrip";
 import { ReferencesPreview } from "@/components/home/ReferencesPreview";
 import { StatementBanner } from "@/components/home/StatementBanner";
 import { TrustBanner } from "@/components/home/TrustBanner";
+import { fetchFeaturedProjects } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const [showcaseProject] = await fetchFeaturedProjects(1);
+
   return (
     <main className="flex flex-1 flex-col">
       <Hero />
       <section className="px-6 py-24 md:px-12 md:py-28">
         <ScrollRevealText text="Bir web sitesi sadece bir vitrin değildir; markanızın dijitaldeki sesi, güveni ve büyüme motorudur." />
       </section>
+      <PinnedShowcase project={showcaseProject ?? null} />
       <ServicesStrip />
       <ReferencesPreview />
       <StatementBanner />
