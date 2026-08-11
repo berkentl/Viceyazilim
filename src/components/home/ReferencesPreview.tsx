@@ -1,20 +1,13 @@
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr/ArrowUpRight";
-import { getSupabaseServerClient, type Project } from "@/lib/supabase/server";
+import { fetchFeaturedProjects } from "@/lib/supabase/server";
 import { ReferenceCard } from "@/components/references/ReferenceCard";
 import { Reveal } from "@/components/motion/Reveal";
 
 export async function ReferencesPreview() {
-  const supabase = getSupabaseServerClient();
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("featured", true)
-    .order("sort_order", { ascending: true })
-    .limit(3)
-    .returns<Project[]>();
+  const projects = await fetchFeaturedProjects(3);
 
-  if (!projects?.length) return null;
+  if (!projects.length) return null;
 
   return (
     <section className="px-6 py-24 md:px-12 md:py-28">

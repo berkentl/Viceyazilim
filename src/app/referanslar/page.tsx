@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getSupabaseServerClient, type Project } from "@/lib/supabase/server";
+import { fetchAllProjects } from "@/lib/supabase/server";
 import { ReferenceCard } from "@/components/references/ReferenceCard";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -12,12 +12,7 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function ReferanslarPage() {
-  const supabase = getSupabaseServerClient();
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("*")
-    .order("sort_order", { ascending: true })
-    .returns<Project[]>();
+  const projects = await fetchAllProjects();
 
   return (
     <main>
@@ -35,12 +30,12 @@ export default async function ReferanslarPage() {
 
       <section className="px-6 pb-28 md:px-12">
         <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-2">
-          {projects?.map((project, index) => (
+          {projects.map((project, index) => (
             <ReferenceCard key={project.id} project={project} index={index} />
           ))}
         </div>
 
-        {!projects?.length && (
+        {!projects.length && (
           <p className="mx-auto max-w-md text-center text-[15px] text-fg-subtle">
             Referanslar yakında burada olacak.
           </p>

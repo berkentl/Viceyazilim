@@ -3,22 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr/ArrowUpRight";
-import { getSupabaseServerClient, type Project } from "@/lib/supabase/server";
+import { fetchProjectBySlug } from "@/lib/supabase/server";
 import { DeviceMockup } from "@/components/references/DeviceMockup";
 import { Reveal } from "@/components/motion/Reveal";
 import { ServiceCTA } from "@/components/services/ServiceCTA";
 
 export const revalidate = 300;
-
-async function getProject(slug: string) {
-  const supabase = getSupabaseServerClient();
-  const { data } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle<Project>();
-  return data;
-}
 
 export async function generateMetadata({
   params,
@@ -26,7 +16,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = await getProject(slug);
+  const project = await fetchProjectBySlug(slug);
   if (!project) return {};
   return {
     title: `${project.title} — Vice Yazılım`,
@@ -40,7 +30,7 @@ export default async function ReferenceDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await getProject(slug);
+  const project = await fetchProjectBySlug(slug);
   if (!project) notFound();
 
   return (
