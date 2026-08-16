@@ -1,9 +1,4 @@
-"use client";
-
-import { useRef } from "react";
 import Image, { getImageProps } from "next/image";
-import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { ArtworkTone, Reference } from "@/lib/references";
 
 /**
@@ -73,51 +68,16 @@ export function ReferenceBanner({
   reference: Reference;
   preload?: boolean;
 }) {
-  const shouldReduceMotion = useSafeReducedMotion();
-  const containerRef = useRef<HTMLAnchorElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      if (shouldReduceMotion) return;
-
-      const timeline = gsap.timeline({
-        scrollTrigger: { trigger: containerRef.current, start: "top 92%", once: true },
-      });
-
-      timeline
-        .from(cardRef.current, {
-          autoAlpha: 0,
-          y: 40,
-          scale: 0.985,
-          duration: 1,
-          ease: "power3.out",
-        })
-        // The copy follows the card in rather than arriving with it, so the
-        // banner reads as one object settling and then speaking.
-        .from(
-          gsap.utils.toArray<HTMLElement>("[data-copy] > *"),
-          { autoAlpha: 0, y: 18, duration: 0.7, stagger: 0.07, ease: "power3.out" },
-          0.25,
-        );
-    },
-    { scope: containerRef, dependencies: [shouldReduceMotion] },
-  );
-
   const href = reference.liveUrl ?? `/referanslar/${reference.slug}`;
   const isExternal = Boolean(reference.liveUrl);
 
   return (
     <a
-      ref={containerRef}
       href={href}
       {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className="group block rounded-[22px] outline-none focus-visible:ring-2 focus-visible:ring-fg focus-visible:ring-offset-4 focus-visible:ring-offset-bg md:rounded-[28px]"
     >
-      <div
-        ref={cardRef}
-        className="relative transition-transform duration-500 ease-out will-change-transform group-hover:-translate-y-1"
-      >
+      <div className="relative transition-transform duration-500 ease-out group-hover:-translate-y-1">
         {reference.mobile.kind === "artwork" ? (
           <ArtworkCard reference={reference} preload={preload} />
         ) : (
@@ -292,7 +252,7 @@ function Copy({
       : TONE[tone][key];
 
   return (
-    <div data-copy className={`z-10 flex flex-col items-start ${className}`}>
+    <div className={`z-10 flex flex-col items-start ${className}`}>
       <span className={`text-[12px] font-medium uppercase tracking-[0.14em] ${at("label")}`}>
         {reference.client}
       </span>

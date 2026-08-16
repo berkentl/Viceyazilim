@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr/ArrowUpRight";
 import { FEATURED_REFERENCES, REFERENCES } from "@/lib/references";
-import { ReferenceBanner } from "./ReferenceBanner";
+import { ReferencesStack } from "./ReferencesStack";
 
 /**
  * Homepage portfolio section. One headline, the banners, one way out — the
@@ -17,14 +17,8 @@ export function ReferencesSection() {
           Seçilmiş işler.
         </h2>
 
-        <div className="mt-12 flex flex-col gap-6 md:mt-16 md:gap-8">
-          {FEATURED_REFERENCES.map((reference, index) => (
-            <ReferenceBanner
-              key={reference.slug}
-              reference={reference}
-              preload={index === 0}
-            />
-          ))}
+        <div className="mt-12 md:mt-16">
+          <ReferencesStack references={FEATURED_REFERENCES} />
         </div>
 
         {REFERENCES.length > FEATURED_REFERENCES.length && (

@@ -17,7 +17,7 @@ export function ProcessSteps({ steps }: { steps: ProcessStep[] }) {
                 index !== steps.length - 1 ? "border-b border-hairline" : ""
               }`}
             >
-              <span className="font-mono text-[14px] text-fg-subtle">
+              <span className="font-sans text-[14px] font-medium tracking-[-0.01em] text-fg-subtle">
                 {step.number}
               </span>
               <div className="flex-1">

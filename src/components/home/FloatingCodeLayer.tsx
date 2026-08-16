@@ -61,7 +61,7 @@ export function FloatingCodeLayer() {
           key={fragment.text}
           data-fragment
           data-speed={fragment.speed}
-          className="absolute whitespace-nowrap font-mono text-[13px] text-fg-subtle/25"
+          className="absolute whitespace-nowrap font-sans text-[13px] text-fg-subtle/25"
           style={{ top: fragment.top, left: fragment.left }}
         >
           {fragment.text}

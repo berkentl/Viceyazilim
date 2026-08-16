@@ -71,7 +71,7 @@ export function Footer() {
           </p>
           <a
             href="mailto:merhaba@viceyazilim.com"
-            className="font-mono text-[12px] text-fg-subtle transition-colors duration-200 hover:text-fg-muted"
+            className="font-sans text-[12px] tracking-[-0.01em] text-fg-subtle transition-colors duration-200 hover:text-fg-muted"
           >
             merhaba@viceyazilim.com
           </a>

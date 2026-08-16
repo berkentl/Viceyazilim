@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { REFERENCES } from "@/lib/references";
-import { ReferenceBanner } from "@/components/references/ReferenceBanner";
+import { ReferencesStack } from "@/components/references/ReferencesStack";
 
 export const metadata: Metadata = {
   title: "Referanslar — Vice Yazılım",
@@ -21,14 +21,8 @@ export default function ReferanslarPage() {
             Projeler çok yakında burada olacak.
           </p>
         ) : (
-          <div className="mt-14 flex flex-col gap-6 md:mt-20 md:gap-8">
-            {REFERENCES.map((reference, index) => (
-              <ReferenceBanner
-                key={reference.slug}
-                reference={reference}
-                preload={index === 0}
-              />
-            ))}
+          <div className="mt-14 md:mt-20">
+            <ReferencesStack references={REFERENCES} />
           </div>
         )}
       </div>

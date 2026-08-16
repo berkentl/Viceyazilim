@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Reveal } from "@/components/motion/Reveal";
 
 /**
  * The site's one deliberately "committed" color moment (per our own
@@ -40,11 +39,11 @@ export function StatementBanner() {
           className="pointer-events-none absolute -right-16 -top-24 h-[680px] w-[520px] opacity-[0.05] md:-right-8 md:-top-32"
         />
 
-        <Reveal className="relative mx-auto max-w-2xl">
+        <div className="relative mx-auto max-w-2xl">
           <h2 className="text-[clamp(1.75rem,4.5vw,3rem)] font-semibold leading-[1.15] tracking-[-0.02em] text-fg">
             Bir web sitesi ilk izlenimdir; biz onu unutulmaz kılıyoruz.
           </h2>
-        </Reveal>
+        </div>
       </div>
     </section>
   );
