@@ -1,46 +1,37 @@
 import type { Metadata } from "next";
-import { fetchAllProjects } from "@/lib/supabase/server";
-import { ReferenceCard } from "@/components/references/ReferenceCard";
-import { Reveal } from "@/components/motion/Reveal";
+import { REFERENCES } from "@/lib/references";
+import { ReferenceBanner } from "@/components/references/ReferenceBanner";
 
 export const metadata: Metadata = {
   title: "Referanslar — Vice Yazılım",
   description:
-    "Vice Yazılım'ın tamamladığı web tasarım ve e-ticaret projelerinden seçkiler.",
+    "Vice Yazılım'ın tasarladığı ve geliştirdiği web siteleri, e-ticaret altyapıları ve dijital ürünler.",
 };
 
-export const revalidate = 300;
-
-export default async function ReferanslarPage() {
-  const projects = await fetchAllProjects();
-
+export default function ReferanslarPage() {
   return (
-    <main>
-      <section className="px-6 pb-16 pt-40 text-center md:px-12 md:pt-48">
-        <Reveal className="mx-auto flex max-w-3xl flex-col items-center">
-          <h1 className="text-[clamp(2.25rem,5.5vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-fg">
-            Tamamladığımız projeler
-          </h1>
-          <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-fg-muted">
-            Farklı sektörlerden gerçek markalar için tasarladığımız ve
-            geliştirdiğimiz web deneyimlerinden bir seçki.
-          </p>
-        </Reveal>
-      </section>
+    <main className="flex flex-1 flex-col px-6 pb-24 pt-36 md:px-12 md:pb-32 md:pt-44">
+      <div className="mx-auto w-full max-w-[1400px]">
+        <h1 className="max-w-3xl text-[clamp(2.25rem,5vw,3.75rem)] font-semibold leading-[1.06] tracking-[-0.03em] text-fg">
+          Referanslar.
+        </h1>
 
-      <section className="px-6 pb-28 md:px-12">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-2">
-          {projects.map((project, index) => (
-            <ReferenceCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
-
-        {!projects.length && (
-          <p className="mx-auto max-w-md text-center text-[15px] text-fg-subtle">
-            Referanslar yakında burada olacak.
+        {REFERENCES.length === 0 ? (
+          <p className="mt-8 text-[16px] text-fg-muted">
+            Projeler çok yakında burada olacak.
           </p>
+        ) : (
+          <div className="mt-14 flex flex-col gap-6 md:mt-20 md:gap-8">
+            {REFERENCES.map((reference, index) => (
+              <ReferenceBanner
+                key={reference.slug}
+                reference={reference}
+                preload={index === 0}
+              />
+            ))}
+          </div>
         )}
-      </section>
+      </div>
     </main>
   );
 }
