@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
 :root {
+  --font-apple-text: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", "Helvetica Neue", sans-serif;
+  --font-apple-display: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "Helvetica Neue", sans-serif;
+
   --hue-brand: 255;
 
   --bg: oklch(0.15 0.021 var(--hue-brand));
@@ -35,7 +40,7 @@
   --color-accent-fg: var(--accent-fg);
   --color-danger: var(--danger);
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-apple-text);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -52,6 +57,11 @@ html {
 body {
   background: var(--bg);
   color: var(--fg);
+  font-family: var(--font-apple-text);
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
@@ -61,12 +71,33 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-apple-display);
+  font-optical-sizing: auto;
   text-wrap: balance;
 }
 
 p {
   text-wrap: pretty;
+}
+
+@media (min-width: 768px) {
+  [data-approach-scroll-story] {
+    height: 100svh;
+    min-height: 44rem;
+    padding-block: clamp(2rem, 4svh, 3rem);
+  }
+
+  .vice-approach-title {
+    font-size: clamp(3.75rem, min(7.5vw, 10svh), 7.25rem);
+  }
+
+  .vice-approach-card {
+    width: clamp(16.5rem, calc((100svh - 20rem) * 0.6667), 24rem);
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {

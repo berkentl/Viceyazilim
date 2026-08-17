@@ -9,6 +9,7 @@ import {
   useState,
   type ReactElement,
   type ReactNode,
+  type RefObject,
 } from "react";
 import Image, { type StaticImageData } from "next/image";
 import {
@@ -22,6 +23,8 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 interface CarouselProps {
   items: ReactElement[];
   initialScroll?: number;
+  scrollDriven?: boolean;
+  trackRef?: RefObject<HTMLDivElement | null>;
 }
 
 export type AppleCardData = {
@@ -42,33 +45,45 @@ const CarouselContext = createContext<{
   onCardClose: () => undefined,
 });
 
-export function Carousel({ items, initialScroll = 0 }: CarouselProps) {
-  const carouselRef = useRef<HTMLDivElement>(null);
+export function Carousel({
+  items,
+  initialScroll = 0,
+  scrollDriven = false,
+  trackRef,
+}: CarouselProps) {
+  const internalCarouselRef = useRef<HTMLDivElement>(null);
+  const carouselRef = trackRef ?? internalCarouselRef;
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const reduceMotion = useReducedMotion();
 
-  const checkScrollability = useCallback(() => {
+  const checkScrollability = () => {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = carousel;
     setCanScrollLeft(scrollLeft > 2);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 2);
-  }, []);
+  };
 
   useEffect(() => {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
-    carousel.scrollLeft = initialScroll;
-    checkScrollability();
+    carousel.scrollLeft = scrollDriven ? 0 : initialScroll;
+    const updateScrollability = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = carousel;
+      setCanScrollLeft(scrollLeft > 2);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 2);
+    };
 
-    const resizeObserver = new ResizeObserver(checkScrollability);
+    updateScrollability();
+
+    const resizeObserver = new ResizeObserver(updateScrollability);
     resizeObserver.observe(carousel);
 
     return () => resizeObserver.disconnect();
-  }, [checkScrollability, initialScroll]);
+  }, [initialScroll, scrollDriven, carouselRef]);
 
   const scrollByCard = (direction: -1 | 1) => {
     carouselRef.current?.scrollBy({
@@ -78,6 +93,8 @@ export function Carousel({ items, initialScroll = 0 }: CarouselProps) {
   };
 
   const handleCardClose = (index: number) => {
+    if (scrollDriven) return;
+
     const card = carouselRef.current?.querySelector<HTMLElement>(
       `[data-carousel-index="${index}"]`,
     );
@@ -94,37 +111,45 @@ export function Carousel({ items, initialScroll = 0 }: CarouselProps) {
       <div className="relative w-full">
         <div
           ref={carouselRef}
-          onScroll={checkScrollability}
+          onScroll={scrollDriven ? undefined : checkScrollability}
           aria-label="Web tasarım yaklaşımımız"
-          className="flex w-full snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-5 pb-8 pt-10 [scrollbar-width:none] sm:gap-5 md:px-10 md:pb-10 md:pt-14 xl:pl-[max(2.5rem,calc((100vw-80rem)/2))] [&::-webkit-scrollbar]:hidden"
+          className={`flex w-full gap-4 px-5 [scrollbar-width:none] sm:gap-5 md:px-10 xl:pl-[max(2.5rem,calc((100vw-80rem)/2))] [&::-webkit-scrollbar]:hidden ${
+            scrollDriven
+              ? "overflow-x-hidden pb-8 pt-10 md:pb-6 md:pt-6"
+              : "snap-x snap-mandatory overflow-x-auto overscroll-x-contain pb-8 pt-10 md:pb-10 md:pt-14"
+          }`}
         >
           {items.map((item, index) => (
             <div
               key={`vice-card-${index}`}
               data-carousel-index={index}
-              className="shrink-0 snap-center first:snap-start last:pr-5 md:last:pr-10"
+              className={`shrink-0 last:pr-5 md:last:pr-10 ${
+                scrollDriven ? "" : "snap-center first:snap-start"
+              }`}
             >
               {item}
             </div>
           ))}
         </div>
 
-        <div className="mx-auto flex max-w-7xl justify-end gap-2 px-5 md:px-10">
-          <CarouselButton
-            label="Önceki kart"
-            disabled={!canScrollLeft}
-            onClick={() => scrollByCard(-1)}
-          >
-            <IconArrowLeft aria-hidden="true" className="h-5 w-5" />
-          </CarouselButton>
-          <CarouselButton
-            label="Sonraki kart"
-            disabled={!canScrollRight}
-            onClick={() => scrollByCard(1)}
-          >
-            <IconArrowRight aria-hidden="true" className="h-5 w-5" />
-          </CarouselButton>
-        </div>
+        {!scrollDriven && (
+          <div className="mx-auto flex max-w-7xl justify-end gap-2 px-5 md:px-10">
+            <CarouselButton
+              label="Önceki kart"
+              disabled={!canScrollLeft}
+              onClick={() => scrollByCard(-1)}
+            >
+              <IconArrowLeft aria-hidden="true" className="h-5 w-5" />
+            </CarouselButton>
+            <CarouselButton
+              label="Sonraki kart"
+              disabled={!canScrollRight}
+              onClick={() => scrollByCard(1)}
+            >
+              <IconArrowRight aria-hidden="true" className="h-5 w-5" />
+            </CarouselButton>
+          </div>
+        )}
       </div>
     </CarouselContext.Provider>
   );
@@ -319,7 +344,7 @@ export function Card({
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-controls={`apple-card-dialog-${index}`}
-        className="group relative aspect-[2/3] w-[78vw] max-w-[22rem] overflow-hidden rounded-[1.75rem] bg-[#111927] text-left shadow-[0_24px_80px_rgba(0,0,0,0.16)] ring-1 ring-white/10 transition-transform duration-150 ease-out-quart active:scale-[0.985] md:w-[24rem] md:max-w-none md:rounded-[2rem]"
+        className="vice-approach-card group relative aspect-[2/3] w-[78vw] max-w-[22rem] overflow-hidden rounded-[1.75rem] bg-[#111927] text-left shadow-[0_24px_80px_rgba(0,0,0,0.16)] ring-1 ring-white/10 transition-transform duration-150 ease-out-quart active:scale-[0.985] md:w-[24rem] md:max-w-none md:rounded-[2rem]"
       >
         <Image
           src={card.src}

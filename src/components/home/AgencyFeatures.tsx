@@ -47,7 +47,7 @@ export function AgencyFeatures() {
       <div className="mx-auto max-w-6xl">
         <header className="grid gap-6 pb-12 md:grid-cols-[minmax(0,1fr)_minmax(18rem,0.48fr)] md:items-end md:gap-12 md:pb-16">
           <div>
-            <p className="text-[0.75rem] font-semibold tracking-[0.08em] text-fg-subtle">
+            <p className="text-[0.78rem] font-medium tracking-[-0.012em] text-fg-subtle">
               Üretim yaklaşımı
             </p>
             <h2 className="mt-5 max-w-3xl text-[clamp(2.4rem,5.5vw,5rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-fg">
@@ -152,7 +152,7 @@ function FeaturePanel({
   return (
     <article className={`relative flex flex-col overflow-hidden ${className}`}>
       <div className="relative z-10 px-7 pb-3 pt-8 sm:px-9 sm:pt-10">
-        <p className="mb-4 text-[0.68rem] font-semibold tracking-[0.08em] text-fg-subtle">
+        <p className="mb-4 text-[0.74rem] font-medium tracking-[-0.012em] text-fg-subtle">
           {phase}
         </p>
         <h3 className="max-w-lg text-[1.45rem] font-semibold leading-[1.12] tracking-[-0.035em] text-fg md:text-[1.7rem]">
@@ -173,7 +173,7 @@ function InfrastructureSurface() {
       <div className="flex h-full flex-col rounded-t-[1.3rem] bg-white/55 px-5 pb-6 pt-5 sm:px-7 sm:pt-6">
         <div className="flex items-center justify-between border-b border-[#111820]/10 pb-4">
           <div>
-            <p className="text-[0.7rem] font-semibold tracking-[0.04em] text-[#59656d]">
+            <p className="text-[0.74rem] font-medium tracking-[-0.01em] text-[#59656d]">
               Ürün mimarisi
             </p>
             <p className="mt-1 text-[0.88rem] font-semibold tracking-[-0.02em]">

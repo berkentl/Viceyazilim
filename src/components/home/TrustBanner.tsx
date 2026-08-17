@@ -32,7 +32,7 @@ export function TrustBanner() {
         <div className="relative px-7 py-10 sm:px-10 sm:py-12 md:px-16 md:py-16 lg:px-20 lg:py-20">
           <header className="grid gap-7 pb-12 md:grid-cols-[minmax(0,1.15fr)_minmax(17rem,0.65fr)] md:items-end md:gap-12 md:pb-16">
             <div>
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[#52606a]">
+              <p className="text-[0.78rem] font-medium tracking-[-0.012em] text-[#52606a]">
                 Çalışma ilkelerimiz
               </p>
               <h2 className="mt-5 max-w-3xl text-[clamp(2.35rem,5.5vw,5.25rem)] font-semibold leading-[0.98] tracking-[-0.055em]">

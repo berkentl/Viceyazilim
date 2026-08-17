@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactElement } from "react";
 import Image from "next/image";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 import {
@@ -8,6 +8,9 @@ import {
   Carousel,
   type AppleCardData,
 } from "@/components/ui/apple-cards-carousel";
+import { ScrollRevealText } from "@/components/home/ScrollRevealText";
+import { WebDesignBento } from "@/components/services/WebDesignBento";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import viceMacbookLogo from "../../../Gallery/LOGO.png";
 import viceCaresCard from "../../../Gallery/kartlar/vice-card-01-vice-sizi-dusunur.png";
@@ -185,6 +188,111 @@ function ViceMacBrand() {
   );
 }
 
+function ApproachScrollStory({ cards }: { cards: ReactElement[] }) {
+  const storyRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useSafeReducedMotion();
+
+  useGSAP(
+    () => {
+      const story = storyRef.current;
+      const carousel = carouselRef.current;
+      const progress = progressRef.current;
+
+      if (!story || !carousel || !progress || reduceMotion) return;
+
+      carousel.scrollLeft = 0;
+      gsap.set(progress, { scaleX: 0, transformOrigin: "left center" });
+
+      const horizontalDistance = () =>
+        Math.max(0, carousel.scrollWidth - carousel.clientWidth);
+
+      const entranceHold = window.matchMedia("(min-width: 768px)").matches
+        ? 0.14
+        : 0;
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: story,
+          start: "top top",
+          end: () =>
+            `+=${Math.max(
+              horizontalDistance() * 1.25,
+              window.innerHeight * 2.35,
+            )}`,
+          pin: true,
+          pinSpacing: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const travelProgress = gsap.utils.clamp(
+              0,
+              1,
+              (self.progress - entranceHold) / (1 - entranceHold),
+            );
+
+            gsap.set(progress, { scaleX: travelProgress });
+          },
+        },
+      });
+
+      timeline
+        .to({}, { duration: entranceHold })
+        .to(carousel, {
+          scrollLeft: () => horizontalDistance(),
+          duration: 1 - entranceHold,
+          ease: "none",
+        });
+
+      return () => {
+        timeline.kill();
+        carousel.scrollLeft = 0;
+      };
+    },
+    { scope: storyRef, dependencies: [reduceMotion], revertOnUpdate: true },
+  );
+
+  return (
+    <div
+      ref={storyRef}
+      data-approach-scroll-story
+      className="relative flex min-h-[100svh] flex-col justify-center py-16 sm:py-20"
+    >
+      <div className="relative mx-auto w-full max-w-7xl px-5 md:px-10">
+        <p className="text-sm font-medium tracking-[-0.01em] text-white/48">
+          Web tasarım yaklaşımımız
+        </p>
+        <h2
+          id="web-design-approach-title"
+          className="vice-approach-title mt-5 max-w-5xl text-[clamp(3rem,7.5vw,7.25rem)] font-semibold leading-[0.92] tracking-[-0.06em]"
+        >
+          Biz farklıyız.
+          <br />
+          <span className="text-white/42">Sizi düşünürüz.</span>
+        </h2>
+      </div>
+
+      <div className="relative mt-2 sm:mt-4">
+        <Carousel
+          items={cards}
+          scrollDriven={!reduceMotion}
+          trackRef={carouselRef}
+        />
+      </div>
+
+      {!reduceMotion && (
+        <div
+          aria-hidden="true"
+          className="mx-auto mt-1 h-px w-[calc(100%-2.5rem)] max-w-7xl overflow-hidden bg-white/10 md:w-[calc(100%-5rem)]"
+        >
+          <div ref={progressRef} className="h-full w-full bg-white/72" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function WebDesignExperience() {
   const cards = approachCards.map((card, index) => (
     <Card key={card.title} card={card} index={index} />
@@ -215,29 +323,19 @@ export function WebDesignExperience() {
 
       <section
         aria-labelledby="web-design-approach-title"
-        className="relative -mt-16 overflow-hidden rounded-t-[2.5rem] bg-[#07101d] pb-28 pt-28 text-white sm:-mt-24 sm:rounded-t-[3.5rem] sm:pb-36 sm:pt-36"
+        className="relative z-10 -mt-72 overflow-x-clip rounded-t-[2.5rem] bg-[#07101d] pb-28 text-white sm:-mt-24 sm:rounded-t-[3.5rem] sm:pb-36"
       >
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-[radial-gradient(circle_at_24%_10%,rgba(75,96,124,0.2),transparent_50%)]"
         />
-        <div className="relative mx-auto max-w-7xl px-5 md:px-10">
-          <p className="text-sm font-medium tracking-[-0.01em] text-white/48">
-            Web tasarım yaklaşımımız
-          </p>
-          <h2
-            id="web-design-approach-title"
-            className="mt-5 max-w-5xl text-[clamp(3rem,7.5vw,7.25rem)] font-semibold leading-[0.92] tracking-[-0.06em]"
-          >
-            Biz farklıyız.
-            <br />
-            <span className="text-white/42">Sizi düşünürüz.</span>
-          </h2>
+        <ApproachScrollStory cards={cards} />
+
+        <div className="relative mx-auto mt-16 max-w-7xl border-t border-white/8 px-5 pt-24 md:mt-24 md:px-10 md:pt-32">
+          <ScrollRevealText text="İyi bir web sitesi yalnızca güzel görünmez; markanızı doğru anlatır, güven oluşturur ve harekete geçirir." />
         </div>
 
-        <div className="relative mt-8 sm:mt-12">
-          <Carousel items={cards} />
-        </div>
+        <WebDesignBento />
       </section>
     </>
   );

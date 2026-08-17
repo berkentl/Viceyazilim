@@ -77,7 +77,7 @@ export const MacbookScroll = ({
   const translate = useTransform(
     scrollYProgress,
     [0, 1],
-    reduceMotion ? [0, 0] : [0, isMobile ? 560 : 1500],
+    reduceMotion ? [0, 0] : [0, isMobile ? 1000 : 1500],
   );
   const rotate = useTransform(
     scrollYProgress,
@@ -88,7 +88,7 @@ export const MacbookScroll = ({
   return (
     <div
       ref={ref}
-      className="flex min-h-[150vh] shrink-0 flex-col items-center justify-start overflow-hidden px-5 pt-36 [perspective:800px] sm:min-h-[180vh] sm:pt-48 md:min-h-[200vh] md:pt-64"
+      className="flex min-h-[118svh] shrink-0 flex-col items-center justify-start overflow-hidden px-5 pt-36 [perspective:800px] sm:min-h-[180vh] sm:pt-48 md:min-h-[200vh] md:pt-64"
     >
       <h1 className="mb-16 max-w-4xl text-balance text-center text-[clamp(2.5rem,5vw,4.75rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-white sm:mb-20">
         {title || (

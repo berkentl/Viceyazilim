@@ -292,7 +292,7 @@ function Copy({
 
   return (
     <div className={`z-10 flex flex-col items-start ${className}`}>
-      <span className={`text-[12px] font-medium uppercase tracking-[0.14em] ${at("label")}`}>
+      <span className={`text-[13px] font-medium tracking-[-0.01em] ${at("label")}`}>
         {reference.client}
       </span>
 
