@@ -4,6 +4,7 @@ import { ServicesStrip } from "@/components/home/ServicesStrip";
 import { ReferencesSection } from "@/components/references/ReferencesSection";
 import { StatementBanner } from "@/components/home/StatementBanner";
 import { TrustBanner } from "@/components/home/TrustBanner";
+import { AgencyFeatures } from "@/components/home/AgencyFeatures";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <ReferencesSection />
       <StatementBanner />
       <TrustBanner />
+      <AgencyFeatures />
     </main>
   );
 }
