@@ -60,6 +60,8 @@ const TONE_MD = {
 
 const FRAME =
   "relative overflow-hidden rounded-[22px] shadow-[0_10px_40px_-16px_rgba(0,0,0,0.5)] ring-1 ring-hairline transition-shadow duration-500 ease-out group-hover:shadow-[0_28px_70px_-20px_rgba(0,0,0,0.65)] md:rounded-[28px]";
+const TRANSPARENT_PIXEL =
+  "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 
 export function ReferenceBanner({
   reference,
@@ -150,13 +152,12 @@ function WideCard({ reference, preload }: { reference: Reference; preload: boole
 
   return (
     <div className={`${FRAME} aspect-[264/100] bg-bg-elevated`}>
-      <Image
-        src={wide.src}
+      <ViewportImage
+        source={wide}
         alt={reference.imageAlt}
-        width={wide.width}
-        height={wide.height}
         sizes="92vw"
-        preload={preload}
+        media="(min-width: 768px)"
+        prioritize={preload}
         className="h-full w-full object-cover"
       />
       <Logo tone={wide.tone} />
@@ -183,13 +184,12 @@ function StackedCard({ reference, preload }: { reference: Reference; preload: bo
     <div className={`${FRAME} flex flex-col`} style={{ background: mobile.surface }}>
       <Logo tone={mobile.tone} />
       <Copy reference={reference} tone={mobile.tone} className="px-6 pb-8 pt-[4.75rem]" />
-      <Image
-        src={mobile.src}
+      <ViewportImage
+        source={mobile}
         alt={reference.imageAlt}
-        width={mobile.width}
-        height={mobile.height}
         sizes="(min-width: 768px) 0px, 100vw"
-        preload={preload}
+        media="(max-width: 767px)"
+        prioritize={preload}
         className={
           mobile.fit === "inset"
             ? "mx-auto mt-auto w-[72%] max-w-[280px] drop-shadow-[0_24px_50px_rgba(0,0,0,0.28)]"
@@ -197,6 +197,45 @@ function StackedCard({ reference, preload }: { reference: Reference; preload: bo
         }
       />
     </div>
+  );
+}
+
+function ViewportImage({
+  source,
+  alt,
+  sizes,
+  media,
+  prioritize,
+  className,
+}: {
+  source: { src: string; width: number; height: number };
+  alt: string;
+  sizes: string;
+  media: string;
+  prioritize: boolean;
+  className: string;
+}) {
+  const {
+    props: { srcSet, ...imageProps },
+  } = getImageProps({
+    ...source,
+    alt,
+    sizes,
+    loading: prioritize ? "eager" : "lazy",
+    fetchPriority: prioritize ? "high" : undefined,
+  });
+
+  return (
+    <picture className="contents">
+      <source media={media} srcSet={srcSet} sizes={sizes} />
+      <img
+        {...imageProps}
+        src={TRANSPARENT_PIXEL}
+        srcSet={undefined}
+        alt={alt}
+        className={className}
+      />
+    </picture>
   );
 }
 

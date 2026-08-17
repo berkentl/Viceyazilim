@@ -22,7 +22,7 @@ export default function ReferanslarPage() {
           </p>
         ) : (
           <div className="mt-14 md:mt-20">
-            <ReferencesStack references={REFERENCES} />
+            <ReferencesStack references={REFERENCES} preloadFirst />
           </div>
         )}
       </div>

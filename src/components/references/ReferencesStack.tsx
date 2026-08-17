@@ -13,7 +13,13 @@ import { ReferenceBanner } from "./ReferenceBanner";
  *
  * Phones and reduced-motion users get the same cards in normal document flow.
  */
-export function ReferencesStack({ references }: { references: readonly Reference[] }) {
+export function ReferencesStack({
+  references,
+  preloadFirst = false,
+}: {
+  references: readonly Reference[];
+  preloadFirst?: boolean;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useSafeReducedMotion();
 
@@ -78,7 +84,10 @@ export function ReferencesStack({ references }: { references: readonly Reference
             } ${stackEnabled && hasFollowingCard ? "md:mb-[18vh]" : ""}`}
             style={{ zIndex: index + 1 }}
           >
-            <ReferenceBanner reference={reference} preload={index === 0} />
+            <ReferenceBanner
+              reference={reference}
+              preload={preloadFirst && index === 0}
+            />
           </div>
         );
       })}

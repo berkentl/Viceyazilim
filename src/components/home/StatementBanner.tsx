@@ -31,13 +31,18 @@ export function StatementBanner() {
           }}
         />
 
-        <Image
-          src="/brand/mark-white.png"
-          alt=""
-          width={520}
-          height={680}
+        <div
+          aria-hidden="true"
           className="pointer-events-none absolute -right-16 -top-24 h-[680px] w-[520px] opacity-[0.05] md:-right-8 md:-top-32"
-        />
+        >
+          <Image
+            src="/brand/mark-white.png"
+            alt=""
+            fill
+            sizes="520px"
+            className="object-cover"
+          />
+        </div>
 
         <div className="relative mx-auto max-w-2xl">
           <h2 className="text-[clamp(1.75rem,4.5vw,3rem)] font-semibold leading-[1.15] tracking-[-0.02em] text-fg">

@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { ArrowUpRight, InstagramLogo } from "@phosphor-icons/react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 const INSTAGRAM_URL = "https://www.instagram.com/viceyazilim/";
+const INSTAGRAM_VIDEO_SRC = "/vice-gallery/instagram-feed.m4v";
 
 const ROADMAP = [
   { number: "01", title: "Altyapı", detail: "Mimari ve teknoloji" },
@@ -249,6 +250,51 @@ function InstagramSurface({
 }: {
   shouldReduceMotion: boolean;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || shouldReduceMotion) return;
+
+    let isNearViewport = false;
+
+    const syncPlayback = () => {
+      if (!isNearViewport || document.hidden) {
+        video.pause();
+        return;
+      }
+
+      if (!video.getAttribute("src")) {
+        video.src = INSTAGRAM_VIDEO_SRC;
+        video.load();
+      }
+
+      void video.play().catch(() => {
+        // The poster remains visible if a browser blocks muted autoplay.
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isNearViewport = entry.isIntersecting;
+        syncPlayback();
+      },
+      {
+        rootMargin: "240px 0px",
+        threshold: 0.01,
+      },
+    );
+
+    observer.observe(video);
+    document.addEventListener("visibilitychange", syncPlayback);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", syncPlayback);
+      video.pause();
+    };
+  }, [shouldReduceMotion]);
+
   return (
     <a
       href={INSTAGRAM_URL}
@@ -258,13 +304,12 @@ function InstagramSurface({
       className="group absolute inset-x-7 bottom-0 top-6 overflow-hidden rounded-t-[1.65rem] bg-black outline-none ring-1 ring-inset ring-white/[0.1] transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-accent sm:inset-x-9"
     >
       <video
-        src="/vice-gallery/instagram-feed.m4v"
+        ref={videoRef}
         poster="/vice-gallery/instagram-video-poster.png"
-        autoPlay={!shouldReduceMotion}
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="none"
         aria-hidden="true"
         className="h-full w-full object-cover"
       />
