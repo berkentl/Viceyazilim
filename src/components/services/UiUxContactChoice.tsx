@@ -30,7 +30,7 @@ const contactRows = [
     icon: Phone,
   },
   {
-    label: "WhatsApp Web",
+    label: "WhatsApp",
     value: "+90 530 138 21 59",
     href: "https://wa.me/905301382159",
     icon: WhatsappLogo,
@@ -45,7 +45,7 @@ const socialLinks = [
   },
   {
     label: "Facebook",
-    href: "https://www.facebook.com/viceyazilim",
+      href: "https://www.facebook.com/profile.php?id=61591721100777&notif_id=1787612471739199&notif_t=page_user_activity&ref=notif",
     icon: FacebookLogo,
   },
   {

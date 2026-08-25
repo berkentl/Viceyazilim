@@ -2,6 +2,7 @@ import { Hero } from "@/components/home/Hero";
 import { ScrollRevealText } from "@/components/home/ScrollRevealText";
 import { ServicesStrip } from "@/components/home/ServicesStrip";
 import { ReferencesSection } from "@/components/references/ReferencesSection";
+import { ReferencesCTA } from "@/components/home/ReferencesCTA";
 import { StatementBanner } from "@/components/home/StatementBanner";
 import { TrustBanner } from "@/components/home/TrustBanner";
 import { AgencyFeatures } from "@/components/home/AgencyFeatures";
@@ -15,6 +16,7 @@ export default function Home() {
       </section>
       <ServicesStrip />
       <ReferencesSection />
+      <ReferencesCTA />
       <StatementBanner />
       <TrustBanner />
       <AgencyFeatures />

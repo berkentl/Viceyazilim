@@ -1,6 +1,4 @@
-import Link from "next/link";
-import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr/ArrowUpRight";
-import { FEATURED_REFERENCES, REFERENCES } from "@/lib/references";
+import { FEATURED_REFERENCES } from "@/lib/references";
 import { ReferencesStack } from "./ReferencesStack";
 
 /**
@@ -20,22 +18,6 @@ export function ReferencesSection() {
         <div className="mt-12 md:mt-16">
           <ReferencesStack references={FEATURED_REFERENCES} />
         </div>
-
-        {REFERENCES.length > FEATURED_REFERENCES.length && (
-          <div className="mt-12 flex justify-center md:mt-16">
-            <Link
-              href="/referanslar"
-              className="group flex items-center gap-1.5 text-[15px] font-medium text-fg-muted transition-colors duration-200 hover:text-fg"
-            >
-              Tüm projeleri gör
-              <ArrowUpRight
-                size={16}
-                weight="regular"
-                className="transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </Link>
-          </div>
-        )}
       </div>
     </section>
   );
