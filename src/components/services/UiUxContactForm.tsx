@@ -1,13 +1,46 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
+import { ArrowUpRight } from "@phosphor-icons/react";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
-type FieldErrors = Partial<Record<"name" | "email" | "projectType" | "message" | "consent", string>>;
+type FieldErrors = Partial<
+  Record<"name" | "email" | "projectType" | "message" | "consent", string>
+>;
 
 export function UiUxContactForm() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const reduceMotion = useSafeReducedMotion();
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
+
+  useGSAP(
+    () => {
+      const form = formRef.current;
+      if (!form || reduceMotion) return;
+
+      const fields = gsap.utils.toArray<HTMLElement>("[data-contact-field]");
+      gsap.fromTo(
+        fields,
+        { autoAlpha: 0, y: 24 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.72,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: form,
+            start: "top 78%",
+            once: true,
+          },
+        },
+      );
+    },
+    { scope: formRef, dependencies: [reduceMotion], revertOnUpdate: true },
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,11 +53,11 @@ export function UiUxContactForm() {
     const message = String(data.get("message") ?? "").trim();
     const consent = data.get("consent") === "on";
 
-    if (name.length < 2) nextErrors.name = "Lütfen adınızı ve soyadınızı yazın.";
+    if (name.length < 2) nextErrors.name = "Lütfen adınızı yazın.";
     if (!/^\S+@\S+\.\S+$/.test(email)) nextErrors.email = "Geçerli bir e-posta adresi yazın.";
-    if (!projectType) nextErrors.projectType = "Projenize en yakın seçeneği belirleyin.";
-    if (message.length < 20) nextErrors.message = "Projenizi en az 20 karakterle anlatın.";
-    if (!consent) nextErrors.consent = "Devam etmek için onay vermeniz gerekiyor.";
+    if (!projectType) nextErrors.projectType = "Bir proje türü seçin.";
+    if (message.length < 20) nextErrors.message = "En az 20 karakterle kısaca anlatın.";
+    if (!consent) nextErrors.consent = "Devam etmek için onay vermelisiniz.";
 
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
@@ -39,13 +72,7 @@ export function UiUxContactForm() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          company: String(data.get("company") ?? "").trim(),
-          projectType,
-          message,
-        }),
+        body: JSON.stringify({ name, email, company: "", projectType, message }),
       });
 
       if (!response.ok) throw new Error("Request failed");
@@ -57,61 +84,67 @@ export function UiUxContactForm() {
   }
 
   return (
-    <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
-      <div className="grid gap-5 md:grid-cols-2">
-        <Field label="Ad soyad" name="name" autoComplete="name" error={errors.name} />
-        <Field label="E-posta" name="email" type="email" autoComplete="email" error={errors.email} />
+    <form ref={formRef} className="grid content-start gap-x-8 md:grid-cols-2" onSubmit={handleSubmit} noValidate>
+      <LineField label="Ad soyad" name="name" autoComplete="name" error={errors.name} />
+      <LineField label="E-posta" name="email" type="email" autoComplete="email" error={errors.email} />
+
+      <div data-contact-field className="border-b border-white/[0.13] py-6 md:col-span-2">
+        <label className="block text-[0.78rem] font-medium text-white/42" htmlFor="projectType">Proje türü</label>
+        <select
+          className="mt-3 h-10 w-full appearance-none bg-transparent text-lg font-medium text-white outline-none md:text-xl"
+          id="projectType"
+          name="projectType"
+          defaultValue=""
+          aria-invalid={Boolean(errors.projectType)}
+          aria-describedby={errors.projectType ? "projectType-error" : undefined}
+        >
+          <option value="" disabled className="bg-[#07111f]">Bir seçenek belirleyin</option>
+          <option value="new-product" className="bg-[#07111f]">Yeni ürün</option>
+          <option value="improvement" className="bg-[#07111f]">Mevcut ürünü iyileştirme</option>
+          <option value="design-system" className="bg-[#07111f]">Tasarım sistemi</option>
+          <option value="usability" className="bg-[#07111f]">Kullanılabilirlik incelemesi</option>
+        </select>
+        {errors.projectType && <ErrorMessage id="projectType-error">{errors.projectType}</ErrorMessage>}
       </div>
-      <div className="grid gap-5 md:grid-cols-2">
-        <Field label="Şirket" name="company" autoComplete="organization" optional />
-        <div>
-          <label className="mb-2.5 block text-sm font-medium text-white/72" htmlFor="projectType">Proje türü</label>
-          <select
-            className="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-white/[0.055] px-4 text-base text-white outline-none transition-[border-color,background-color,box-shadow] duration-200 focus:border-[#65a5ff]/70 focus:bg-white/[0.075] focus:ring-4 focus:ring-[#3478f6]/10"
-            id="projectType"
-            name="projectType"
-            defaultValue=""
-            aria-invalid={Boolean(errors.projectType)}
-            aria-describedby={errors.projectType ? "projectType-error" : undefined}
-          >
-            <option value="" disabled>Bir seçenek belirleyin</option>
-            <option value="new-product">Yeni ürün</option>
-            <option value="improvement">Mevcut ürünü iyileştirme</option>
-            <option value="design-system">Tasarım sistemi</option>
-            <option value="usability">Kullanılabilirlik incelemesi</option>
-          </select>
-          {errors.projectType && <ErrorMessage id="projectType-error">{errors.projectType}</ErrorMessage>}
-        </div>
-      </div>
-      <div>
-        <label className="mb-2.5 block text-sm font-medium text-white/72" htmlFor="message">Bize biraz anlatın</label>
+
+      <div data-contact-field className="border-b border-white/[0.13] py-6 md:col-span-2">
+        <label className="block text-[0.78rem] font-medium text-white/42" htmlFor="message">Kısaca projeniz</label>
         <textarea
-          className="min-h-36 w-full resize-y rounded-2xl border border-white/10 bg-white/[0.055] px-4 py-4 text-base leading-7 text-white outline-none transition-[border-color,background-color,box-shadow] duration-200 placeholder:text-white/28 focus:border-[#65a5ff]/70 focus:bg-white/[0.075] focus:ring-4 focus:ring-[#3478f6]/10"
+          className="mt-3 min-h-28 w-full resize-none bg-transparent text-lg leading-8 text-white outline-none placeholder:text-white/24 md:text-xl"
           id="message"
           name="message"
-          placeholder="Ürününüzü, hedefinizi ve çözmek istediğiniz problemi kısaca paylaşın."
+          placeholder="Neyi daha iyi hâle getirmek istiyorsunuz?"
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? "message-error" : undefined}
         />
         {errors.message && <ErrorMessage id="message-error">{errors.message}</ErrorMessage>}
       </div>
-      <div>
-        <label className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-white/48">
-          <input className="mt-1 h-4 w-4 shrink-0 accent-[#3478f6]" type="checkbox" name="consent" aria-invalid={Boolean(errors.consent)} />
-          <span>İletişim bilgilerimin bu talebe dönüş yapılması amacıyla işlenmesini kabul ediyorum.</span>
+
+      <div data-contact-field className="py-6 md:col-span-2">
+        <label className="flex max-w-lg cursor-pointer items-start gap-3 text-sm leading-6 text-white/40">
+          <input
+            className="mt-1 h-4 w-4 shrink-0 accent-[#72a9ff]"
+            type="checkbox"
+            name="consent"
+            aria-invalid={Boolean(errors.consent)}
+          />
+          <span>İletişim bilgilerimin bu talebe dönüş yapılması için kullanılmasını kabul ediyorum.</span>
         </label>
         {errors.consent && <ErrorMessage>{errors.consent}</ErrorMessage>}
       </div>
 
-      <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
+      <div data-contact-field className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center md:col-span-2">
         <button
-          className="inline-flex h-14 items-center justify-center rounded-full bg-white px-7 text-sm font-semibold text-[#07111f] transition-[transform,background-color] duration-200 hover:bg-white/90 active:scale-[0.98] disabled:cursor-wait disabled:opacity-60"
+          className="group inline-flex h-14 w-fit items-center gap-5 rounded-full bg-white pl-6 pr-2 text-sm font-semibold text-[#07111f] transition-[transform,background-color] duration-200 hover:bg-[#edf3ff] active:scale-[0.98] disabled:cursor-wait disabled:opacity-60"
           type="submit"
           disabled={status === "submitting"}
         >
-          {status === "submitting" ? "Gönderiliyor" : "Görüşme isteği gönder"}
+          <span>{status === "submitting" ? "Gönderiliyor" : "Görüşme isteği gönder"}</span>
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-[#dce7f7] transition-transform duration-300 group-hover:rotate-6">
+            <ArrowUpRight size={18} weight="regular" aria-hidden="true" />
+          </span>
         </button>
-        <p className="text-sm text-white/42" aria-live="polite">
+        <p className="text-sm leading-6 text-white/42" aria-live="polite">
           {status === "success" && "Talebiniz ulaştı. En kısa sürede size döneceğiz."}
           {status === "error" && "Şu anda gönderilemedi. Lütfen biraz sonra tekrar deneyin."}
         </p>
@@ -120,29 +153,25 @@ export function UiUxContactForm() {
   );
 }
 
-function Field({
+function LineField({
   label,
   name,
   type = "text",
   autoComplete,
-  optional,
   error,
 }: {
   label: string;
   name: string;
   type?: string;
   autoComplete?: string;
-  optional?: boolean;
   error?: string;
 }) {
   const errorId = `${name}-error`;
   return (
-    <div>
-      <label className="mb-2.5 block text-sm font-medium text-white/72" htmlFor={name}>
-        {label}{optional && <span className="ml-1 font-normal text-white/32">İsteğe bağlı</span>}
-      </label>
+    <div data-contact-field className="border-b border-white/[0.13] py-6">
+      <label className="block text-[0.78rem] font-medium text-white/42" htmlFor={name}>{label}</label>
       <input
-        className="h-14 w-full rounded-2xl border border-white/10 bg-white/[0.055] px-4 text-base text-white outline-none transition-[border-color,background-color,box-shadow] duration-200 focus:border-[#65a5ff]/70 focus:bg-white/[0.075] focus:ring-4 focus:ring-[#3478f6]/10"
+        className="mt-3 h-10 w-full bg-transparent text-lg font-medium text-white outline-none md:text-xl"
         id={name}
         name={name}
         type={type}
