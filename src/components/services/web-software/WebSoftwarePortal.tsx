@@ -157,7 +157,10 @@ export function WebSoftwarePortal() {
             aria-label="VICE Yazılım üretim süreci videosu"
             className="h-full w-full scale-100 object-cover will-change-transform"
           >
-            <source src="/web-design/vice-claude.m4v" type="video/mp4" />
+            <source
+              src="/web-design/Webtasarimajansi_vice.mp4"
+              type="video/mp4"
+            />
           </video>
         </div>
 

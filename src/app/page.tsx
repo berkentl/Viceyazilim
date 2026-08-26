@@ -6,6 +6,7 @@ import { ReferencesCTA } from "@/components/home/ReferencesCTA";
 import { StatementBanner } from "@/components/home/StatementBanner";
 import { TrustBanner } from "@/components/home/TrustBanner";
 import { AgencyFeatures } from "@/components/home/AgencyFeatures";
+import { ProductContinuityStory } from "@/components/home/ProductContinuityStory";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <StatementBanner />
       <TrustBanner />
       <AgencyFeatures />
+      <ProductContinuityStory />
     </main>
   );
 }

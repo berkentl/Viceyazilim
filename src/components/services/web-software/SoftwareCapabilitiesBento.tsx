@@ -1,6 +1,4 @@
-import Image from "next/image";
 import { ArrowsOut } from "@phosphor-icons/react/dist/ssr/ArrowsOut";
-import { Brain } from "@phosphor-icons/react/dist/ssr/Brain";
 import { CloudArrowUp } from "@phosphor-icons/react/dist/ssr/CloudArrowUp";
 import { Code } from "@phosphor-icons/react/dist/ssr/Code";
 import { Database } from "@phosphor-icons/react/dist/ssr/Database";
@@ -8,6 +6,7 @@ import { PlugsConnected } from "@phosphor-icons/react/dist/ssr/PlugsConnected";
 import { ShieldCheck } from "@phosphor-icons/react/dist/ssr/ShieldCheck";
 import { Storefront } from "@phosphor-icons/react/dist/ssr/Storefront";
 import { Reveal } from "@/components/motion/Reveal";
+import { SoftwareRoutePicker } from "@/components/services/web-software/SoftwareRoutePicker";
 
 const cardClass =
   "relative h-full overflow-hidden rounded-[2rem] bg-[#111720] ring-1 ring-inset ring-white/[0.09] shadow-[0_24px_80px_rgba(0,0,0,0.17)]";
@@ -122,28 +121,11 @@ export function SoftwareCapabilitiesBento() {
           </Reveal>
 
           <Reveal className="sm:col-span-6 lg:col-span-3" index={4}>
-            <article className={`${cardClass} min-h-[30rem]`}>
-              <Image
-                src="/vice-gallery/ekip.png"
-                alt="VICE Yazılım ekibinin üretim yaklaşımı"
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover opacity-34"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,19,0.12),rgba(8,12,19,0.94))]" />
-              <div className="relative flex min-h-[30rem] flex-col justify-between p-7 md:p-8">
-                <div className="grid h-14 w-14 place-items-center rounded-full bg-white/[0.07] ring-1 ring-inset ring-white/10 backdrop-blur-md">
-                  <Brain size={31} weight="light" className="text-white/82" />
-                </div>
-                <div className="max-w-xl">
-                  <h3 className="text-[clamp(1.8rem,3vw,2.7rem)] font-semibold leading-[1.02] tracking-[-0.05em]">
-                    Yapay zekâ destekli iş akışları
-                  </h3>
-                  <p className="mt-5 max-w-lg text-sm leading-6 text-white/55 md:text-base md:leading-7">
-                    Tekrarlanan işleri azaltan, veriyi anlamlandıran ve ekibin karar hızını artıran çözümler geliştiriyoruz.
-                  </p>
-                </div>
-              </div>
+            <article
+              className={`${cardClass} flex min-h-[30rem] items-center justify-center p-4 sm:p-6 md:p-8`}
+              aria-label="Yapay zekâ eforu seçici"
+            >
+              <SoftwareRoutePicker className="w-full max-w-[408px]" />
             </article>
           </Reveal>
         </div>

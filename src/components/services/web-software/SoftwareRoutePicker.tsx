@@ -1,307 +1,713 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ArrowClockwise,
-  ArrowRight,
-  Check,
-  Code,
-  Lightning,
-  PlugsConnected,
-  Robot,
-  ShoppingBag,
-  SquaresFour,
-} from "@phosphor-icons/react";
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { CaretDown, Lightning, X } from "@phosphor-icons/react";
+import styles from "./SoftwareRoutePicker.module.css";
 
-const routes = [
-  {
-    label: "Startup MVP",
-    shortLabel: "MVP",
-    description:
-      "Fikrinizi doğrulayan, hızlı öğrenmenizi sağlayan ve yeni sürümlere sağlam bir temel bırakan ilk ürün.",
-    icon: Lightning,
-  },
-  {
-    label: "SaaS Platformu",
-    shortLabel: "SaaS",
-    description:
-      "Üyelik, yetkilendirme, abonelik ve yönetim akışlarıyla ölçeklenmeye hazır dijital platform.",
-    icon: SquaresFour,
-  },
-  {
-    label: "E-Ticaret",
-    shortLabel: "E-Ticaret",
-    description:
-      "Markanıza özel alışveriş deneyimi, güvenli ödeme akışı ve operasyon sistemleriyle entegre satış altyapısı.",
-    icon: ShoppingBag,
-  },
-  {
-    label: "İç Sistem",
-    shortLabel: "İç Sistem",
-    description:
-      "Ekibinizin tekrar eden işlerini tek yerde toplayan, süreçleri görünür ve ölçülebilir kılan özel yazılım.",
-    icon: Code,
-  },
-  {
-    label: "API Entegrasyonu",
-    shortLabel: "API",
-    description:
-      "Kullandığınız servisleri güvenli veri akışlarıyla birbirine bağlayan, sürdürülebilir entegrasyon mimarisi.",
-    icon: PlugsConnected,
-  },
-  {
-    label: "Yapay Zekâ",
-    shortLabel: "Yapay Zekâ",
-    description:
-      "Veriyi anlamlandıran, ekip yükünü azaltan ve karar süreçlerini hızlandıran yapay zekâ destekli iş akışları.",
-    icon: Robot,
-  },
+const PINBALL_DEFAULTS = Object.freeze({
+  ballRadius: 8,
+  gravity: 680,
+  pegRestitution: 0.76,
+  wallRestitution: 0.7,
+  tangentRetention: 0.985,
+  pocketRestitution: 0.3,
+  pocketSpring: 150,
+  pocketDamping: 18,
+  fixedStep: 1 / 240,
+  maxPlayTime: 3.5,
+});
+
+const STOPS = [
+  { id: "auto", label: "Otomatik" },
+  { id: "light", label: "Hafif" },
+  { id: "medium", label: "Orta" },
+  { id: "high", label: "Yüksek" },
+  { id: "extra-high", label: "Çok Yüksek" },
+  { id: "ultra", label: "Ultra" },
 ] as const;
 
-const pegRows = [5, 6, 5, 6, 5];
+const STOP_POSITIONS = [8.333, 25, 41.667, 58.333, 75, 91.667];
+const INITIAL_STOP = 2;
+const PEG_ROWS = [5, 6, 5, 6, 5];
+const PEG_POSITIONS = PEG_ROWS.flatMap((count, rowIndex) => {
+  const positions =
+    count === 5
+      ? [16.667, 33.333, 50, 66.667, 83.333]
+      : [8.333, 25, 41.667, 58.333, 75, 91.667];
 
-export function SoftwareRoutePicker() {
-  const boardRef = useRef<HTMLDivElement>(null);
+  return positions.map((left) => ({ left, top: 10 + rowIndex * 18 }));
+});
+
+type Peg = {
+  element: HTMLSpanElement;
+  x: number;
+  y: number;
+  radius: number;
+};
+
+type Impact = {
+  peg: Peg;
+  index: number;
+  x: number;
+  y: number;
+  nx: number;
+  ny: number;
+  speed: number;
+};
+
+type PinballState = Omit<typeof PINBALL_DEFAULTS, "ballRadius"> & {
+  ballRadius: number;
+  width: number;
+  height: number;
+  pocketTop: number;
+  pegs: Peg[];
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  elapsed: number;
+  captureElapsed: number;
+  accumulator: number;
+  mode: "play" | "pocket";
+  target: number | null;
+  targetX: number | null;
+  targetY: number;
+  floorHits: number;
+  verticalSleeping: boolean;
+  landed: boolean;
+  lastImpactAt: number[];
+};
+
+type TracePoint = { x: number; y: number; time: number };
+
+function clamp(value: number, minimum: number, maximum: number) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function createPinballState({
+  width,
+  height,
+  pocketTop,
+  pegs,
+  ballRadius,
+}: {
+  width: number;
+  height: number;
+  pocketTop: number;
+  pegs: Peg[];
+  ballRadius: number;
+}): PinballState {
+  const jitter = (Math.random() - 0.5) * 4.4;
+  const launchSample = Math.random() - 0.5;
+  const launchVelocity =
+    Math.sign(launchSample || 1) * (16 + Math.abs(launchSample) * 28);
+
+  return {
+    ...PINBALL_DEFAULTS,
+    ballRadius,
+    width,
+    height,
+    pocketTop,
+    pegs,
+    x: width / 2 + jitter,
+    y: -PINBALL_DEFAULTS.ballRadius,
+    vx: launchVelocity,
+    vy: 30,
+    elapsed: 0,
+    captureElapsed: 0,
+    accumulator: 0,
+    mode: "play",
+    target: null,
+    targetX: null,
+    targetY: height * 0.89,
+    floorHits: 0,
+    verticalSleeping: false,
+    landed: false,
+    lastImpactAt: Array(pegs.length).fill(-Infinity),
+  };
+}
+
+function resolveSideWalls(state: PinballState) {
+  if (state.x < state.ballRadius) {
+    state.x = state.ballRadius;
+    if (state.vx < 0) state.vx *= -state.wallRestitution;
+  } else if (state.x > state.width - state.ballRadius) {
+    state.x = state.width - state.ballRadius;
+    if (state.vx > 0) state.vx *= -state.wallRestitution;
+  }
+}
+
+function resolvePegs(state: PinballState, impacts: Impact[]) {
+  for (let pass = 0; pass < 2; pass += 1) {
+    state.pegs.forEach((peg, index) => {
+      const dx = state.x - peg.x;
+      const dy = state.y - peg.y;
+      const minimumDistance = state.ballRadius + peg.radius;
+      const distanceSquared = dx * dx + dy * dy;
+
+      if (distanceSquared >= minimumDistance * minimumDistance) return;
+
+      const distance = Math.sqrt(distanceSquared) || minimumDistance;
+      const nx = distanceSquared === 0 ? 0 : dx / distance;
+      const ny = distanceSquared === 0 ? -1 : dy / distance;
+      const overlap = minimumDistance - distance;
+      state.x += nx * overlap;
+      state.y += ny * overlap;
+
+      const normalVelocity = state.vx * nx + state.vy * ny;
+      if (normalVelocity >= 0) return;
+
+      const tangentX = -ny;
+      const tangentY = nx;
+      const tangentVelocity = state.vx * tangentX + state.vy * tangentY;
+      const reboundVelocity = -normalVelocity * state.pegRestitution;
+      const retainedTangentVelocity =
+        tangentVelocity * state.tangentRetention;
+      state.vx =
+        reboundVelocity * nx + retainedTangentVelocity * tangentX;
+      state.vy =
+        reboundVelocity * ny + retainedTangentVelocity * tangentY;
+
+      if (
+        state.elapsed - state.lastImpactAt[index] >= 0.075 &&
+        -normalVelocity >= 24
+      ) {
+        state.lastImpactAt[index] = state.elapsed;
+        impacts.push({
+          peg,
+          index,
+          x: peg.x + nx * peg.radius,
+          y: peg.y + ny * peg.radius,
+          nx,
+          ny,
+          speed: -normalVelocity,
+        });
+      }
+    });
+  }
+}
+
+function beginPocketCapture(state: PinballState) {
+  const slotWidth = state.width / STOPS.length;
+  const target = clamp(Math.floor(state.x / slotWidth), 0, STOPS.length - 1);
+  state.target = target;
+  state.targetX = (target + 0.5) * slotWidth;
+  state.mode = "pocket";
+}
+
+function stepPinball(state: PinballState, deltaSeconds: number) {
+  if (state.landed) return { landed: true, impacts: [] as Impact[] };
+
+  state.elapsed += deltaSeconds;
+  const impacts: Impact[] = [];
+
+  if (state.mode === "play") {
+    state.vy += state.gravity * deltaSeconds;
+    state.x += state.vx * deltaSeconds;
+    state.y += state.vy * deltaSeconds;
+    resolveSideWalls(state);
+    resolvePegs(state, impacts);
+
+    if (state.y >= state.pocketTop || state.elapsed >= state.maxPlayTime) {
+      beginPocketCapture(state);
+    }
+  } else if (state.targetX !== null && state.target !== null) {
+    state.captureElapsed += deltaSeconds;
+    const horizontalAcceleration =
+      (state.targetX - state.x) * state.pocketSpring -
+      state.vx * state.pocketDamping;
+    state.vx += horizontalAcceleration * deltaSeconds;
+    state.x += state.vx * deltaSeconds;
+
+    const slotWidth = state.width / STOPS.length;
+    const left = state.target * slotWidth + state.ballRadius;
+    const right = (state.target + 1) * slotWidth - state.ballRadius;
+
+    if (state.x < left) {
+      state.x = left;
+      if (state.vx < 0) state.vx *= -state.wallRestitution;
+    } else if (state.x > right) {
+      state.x = right;
+      if (state.vx > 0) state.vx *= -state.wallRestitution;
+    }
+
+    if (!state.verticalSleeping) {
+      state.vy += state.gravity * deltaSeconds;
+      state.y += state.vy * deltaSeconds;
+
+      if (state.y >= state.targetY && state.vy > 0) {
+        const incomingSpeed = state.vy;
+        state.y = state.targetY;
+        state.vy = -incomingSpeed * state.pocketRestitution;
+        state.vx *= 0.82;
+        state.floorHits += 1;
+
+        if (state.floorHits >= 2 || incomingSpeed < 90) {
+          state.vy = 0;
+          state.verticalSleeping = true;
+        }
+      }
+    }
+
+    const horizontallySettled =
+      Math.abs(state.targetX - state.x) < 0.7 && Math.abs(state.vx) < 7;
+    if (
+      (state.verticalSleeping && horizontallySettled) ||
+      state.captureElapsed >= 0.9
+    ) {
+      state.x = state.targetX;
+      state.y = state.targetY;
+      state.vx = 0;
+      state.vy = 0;
+      state.landed = true;
+    }
+  }
+
+  return { landed: state.landed, impacts };
+}
+
+function randomReducedMotionStop() {
+  let rights = 0;
+  for (let index = 0; index < 5; index += 1) {
+    if (Math.random() >= 0.5) rights += 1;
+  }
+  return rights;
+}
+
+export function SoftwareRoutePicker({ className = "" }: { className?: string }) {
+  const [open, setOpen] = useState(true);
+  const [selected, setSelected] = useState(INITIAL_STOP);
+  const [phase, setPhase] = useState<"dropping" | "landed">("landed");
+  const [landingSlot, setLandingSlot] = useState<number | null>(null);
+
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const pocketsRef = useRef<HTMLDivElement>(null);
   const ballRef = useRef<HTMLSpanElement>(null);
-  const animationRef = useRef<Animation | null>(null);
-  const [selected, setSelected] = useState(1);
-  const [status, setStatus] = useState<"ready" | "running" | "landed">(
-    "ready",
+  const trailRef = useRef<HTMLSpanElement>(null);
+  const impactRef = useRef<HTMLSpanElement>(null);
+  const flightPathRef = useRef<SVGSVGElement>(null);
+  const flightPathGlowRef = useRef<SVGPathElement>(null);
+  const flightPathCoreRef = useRef<SVGPathElement>(null);
+  const pegRefs = useRef<Array<HTMLSpanElement | null>>([]);
+  const animationFrameRef = useRef(0);
+  const animationTokenRef = useRef(0);
+  const landingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const setBall = useCallback((x: number, y: number, scale = 1) => {
+    const ball = ballRef.current;
+    if (!ball) return;
+    ball.style.setProperty("--ball-x", `${x}%`);
+    ball.style.setProperty("--ball-y", `${y}%`);
+    ball.style.setProperty("--ball-scale", String(scale));
+  }, []);
+
+  const clearFlightPath = useCallback(() => {
+    flightPathRef.current?.classList.remove(styles.flightPathVisible);
+    flightPathGlowRef.current?.setAttribute("d", "");
+    flightPathCoreRef.current?.setAttribute("d", "");
+  }, []);
+
+  const cancelAnimation = useCallback(() => {
+    animationTokenRef.current += 1;
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = 0;
+    }
+    if (landingTimerRef.current) {
+      clearTimeout(landingTimerRef.current);
+      landingTimerRef.current = null;
+    }
+    if (trailRef.current) trailRef.current.style.opacity = "0";
+    clearFlightPath();
+    setLandingSlot(null);
+  }, [clearFlightPath]);
+
+  const flashImpact = useCallback(
+    (state: PinballState, impact: Impact) => {
+      const marker = impactRef.current;
+      if (marker) {
+        const x = (impact.x / state.width) * 100;
+        const y = (impact.y / state.height) * 100;
+        const rotation = (Math.atan2(impact.ny, impact.nx) * 180) / Math.PI;
+        marker.style.setProperty("--impact-x", `${x}%`);
+        marker.style.setProperty("--impact-y", `${y}%`);
+        marker.style.setProperty("--impact-rotation", `${rotation}deg`);
+        marker.classList.remove(styles.impactFlash);
+        void marker.offsetWidth;
+        marker.classList.add(styles.impactFlash);
+      }
+
+      const peg = impact.peg.element;
+      const kick = Math.min(1.45, 0.65 + impact.speed / 260);
+      peg.style.setProperty(
+        "--peg-kick-x",
+        `${(-impact.nx * kick).toFixed(2)}px`,
+      );
+      peg.style.setProperty(
+        "--peg-kick-y",
+        `${(-impact.ny * kick).toFixed(2)}px`,
+      );
+      peg.classList.remove(styles.pegRebound);
+      void peg.offsetWidth;
+      peg.classList.add(styles.pegRebound);
+    },
+    [],
   );
 
-  const dropBall = useCallback((targetIndex?: number) => {
-    const board = boardRef.current;
-    const ball = ballRef.current;
+  const finishDrop = useCallback(
+    (target: number, token: number) => {
+      if (token !== animationTokenRef.current) return;
+      const position = STOP_POSITIONS[target];
+      setBall(position, 89, 1.04);
+      setSelected(target);
+      setPhase("landed");
+      setLandingSlot(target);
+      clearFlightPath();
+      if (trailRef.current) trailRef.current.style.opacity = "0";
 
-    if (!board || !ball) return;
+      landingTimerRef.current = setTimeout(() => {
+        if (token !== animationTokenRef.current) return;
+        setLandingSlot(null);
+        landingTimerRef.current = null;
+      }, 520);
+    },
+    [clearFlightPath, setBall],
+  );
 
-    animationRef.current?.cancel();
+  const startDrop = useCallback(() => {
+    if (phase === "dropping") return;
 
-    const nextIndex =
-      typeof targetIndex === "number"
-        ? targetIndex
-        : Math.floor(Math.random() * routes.length);
-    const { width, height } = board.getBoundingClientRect();
-    const targetX =
-      ((nextIndex + 0.5) / routes.length - 0.5) * Math.max(width - 44, 0);
-    const travelY = Math.max(height - 76, 210);
+    cancelAnimation();
+    setOpen(true);
+    setPhase("dropping");
+
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-
-    setStatus("running");
-
-    const finalTransform = `translate3d(${targetX}px, ${travelY}px, 0) translateX(-50%)`;
+    const token = ++animationTokenRef.current;
 
     if (reducedMotion) {
-      ball.style.transform = finalTransform;
-      setSelected(nextIndex);
-      setStatus("landed");
+      finishDrop(randomReducedMotionStop(), token);
       return;
     }
 
-    const drift = Math.min(width * 0.12, 76);
-    const direction = nextIndex < routes.length / 2 ? -1 : 1;
-    const frames = [
-      "translate3d(0px, 0px, 0) translateX(-50%)",
-      `translate3d(${direction * drift * 0.42}px, ${travelY * 0.17}px, 0) translateX(-50%)`,
-      `translate3d(${-direction * drift * 0.28}px, ${travelY * 0.35}px, 0) translateX(-50%)`,
-      `translate3d(${direction * drift * 0.72}px, ${travelY * 0.53}px, 0) translateX(-50%)`,
-      `translate3d(${targetX * 0.58}px, ${travelY * 0.72}px, 0) translateX(-50%)`,
-      `translate3d(${targetX * 0.86}px, ${travelY * 0.9}px, 0) translateX(-50%)`,
-      finalTransform,
-    ];
+    requestAnimationFrame(() => {
+      const field = fieldRef.current;
+      const pockets = pocketsRef.current;
+      const ball = ballRef.current;
+      if (!field || !pockets || !ball) return;
 
-    const animation = ball.animate(
-      frames.map((transform, index) => ({
-        transform,
-        offset: index / (frames.length - 1),
-      })),
-      {
-        duration: 1250,
-        easing: "cubic-bezier(0.65, 0, 0.35, 1)",
-        fill: "forwards",
-      },
-    );
+      const fieldRect = field.getBoundingClientRect();
+      const pocketRect = pockets.getBoundingClientRect();
+      const ballRect = ball.getBoundingClientRect();
+      const pegs = pegRefs.current.flatMap((element) => {
+        if (!element) return [];
+        const rect = element.getBoundingClientRect();
+        return [
+          {
+            element,
+            x: rect.left + rect.width / 2 - fieldRect.left,
+            y: rect.top + rect.height / 2 - fieldRect.top,
+            radius: rect.width / 2,
+          },
+        ];
+      });
 
-    animationRef.current = animation;
-    animation.onfinish = () => {
-      ball.style.transform = finalTransform;
-      setSelected(nextIndex);
-      setStatus("landed");
-    };
-  }, []);
+      const motion = createPinballState({
+        width: fieldRect.width,
+        height: fieldRect.height,
+        pocketTop: pocketRect.top - fieldRect.top,
+        pegs,
+        ballRadius: ballRect.width / 2,
+      });
 
-  const reset = useCallback(() => {
-    animationRef.current?.cancel();
-    if (ballRef.current) {
-      ballRef.current.style.transform =
-        "translate3d(0px, 0px, 0) translateX(-50%)";
-    }
-    setStatus("ready");
-  }, []);
+      const trace: TracePoint[] = [];
+      const history: TracePoint[] = [];
+      let lastFrame: number | null = null;
+
+      flightPathRef.current?.setAttribute(
+        "viewBox",
+        `0 0 ${motion.width} ${motion.height}`,
+      );
+      flightPathRef.current?.classList.add(styles.flightPathVisible);
+      setBall((motion.x / motion.width) * 100, (motion.y / motion.height) * 100);
+
+      const appendTracePoint = (
+        x: number,
+        y: number,
+        time: number,
+        minimumDistance = 1.35,
+      ) => {
+        const last = trace.at(-1);
+        if (!last || Math.hypot(x - last.x, y - last.y) >= minimumDistance) {
+          trace.push({ x, y, time });
+        }
+      };
+
+      const frame = (now: number) => {
+        if (token !== animationTokenRef.current) return;
+        if (lastFrame === null) lastFrame = now;
+        const deltaSeconds = Math.max(
+          0,
+          Math.min(0.05, (now - lastFrame) / 1000),
+        );
+        lastFrame = now;
+        motion.accumulator = Math.min(
+          0.08,
+          motion.accumulator + deltaSeconds,
+        );
+        let landed = false;
+
+        while (motion.accumulator >= motion.fixedStep && !landed) {
+          const events = stepPinball(motion, motion.fixedStep);
+          events.impacts.forEach((impact) => {
+            appendTracePoint(impact.x, impact.y, now, 0.5);
+            flashImpact(motion, impact);
+          });
+          landed = events.landed;
+          motion.accumulator -= motion.fixedStep;
+        }
+
+        const x = (motion.x / motion.width) * 100;
+        const y = (motion.y / motion.height) * 100;
+        setBall(x, y);
+        appendTracePoint(motion.x, motion.y, now);
+
+        const cutoff = now - 90;
+        while (trace.length > 2 && trace[1].time < cutoff) trace.shift();
+        const path = trace
+          .map(
+            (point, index) =>
+              `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`,
+          )
+          .join(" ");
+        flightPathGlowRef.current?.setAttribute("d", path);
+        flightPathCoreRef.current?.setAttribute("d", path);
+
+        history.push({ time: now, x, y });
+        const ghostTime = now - 72;
+        while (history.length > 2 && history[1].time <= ghostTime) {
+          history.shift();
+        }
+        const ghost = history[0];
+        const trail = trailRef.current;
+        if (ghost && trail) {
+          const angle = (Math.atan2(motion.vy, motion.vx) * 180) / Math.PI;
+          const stretch =
+            1 + Math.min(0.65, Math.hypot(motion.vx, motion.vy) / 390);
+          trail.style.left = `${ghost.x}%`;
+          trail.style.top = `${ghost.y}%`;
+          trail.style.setProperty("--trail-angle", `${angle}deg`);
+          trail.style.setProperty("--trail-stretch", stretch.toFixed(3));
+          trail.style.opacity = history.length > 1 && !landed ? "0.34" : "0.05";
+        }
+
+        if (!landed) {
+          animationFrameRef.current = requestAnimationFrame(frame);
+        } else {
+          animationFrameRef.current = 0;
+          finishDrop(motion.target ?? INITIAL_STOP, token);
+        }
+      };
+
+      animationFrameRef.current = requestAnimationFrame(frame);
+    });
+  }, [cancelAnimation, finishDrop, flashImpact, phase, setBall]);
 
   useEffect(() => {
-    return () => animationRef.current?.cancel();
-  }, []);
+    if (phase === "landed") setBall(STOP_POSITIONS[selected], 89);
+  }, [phase, selected, setBall]);
 
-  const SelectedIcon = routes[selected].icon;
+  useEffect(() => cancelAnimation, [cancelAnimation]);
+
+  const status =
+    phase === "dropping"
+      ? "Top oyunda..."
+      : selected === STOPS.length - 1
+        ? "En yüksek yapay zekâ eforu seçildi"
+        : `${STOPS[selected].label} seviyeye indi. Efor ayarlandı.`;
 
   return (
-    <section className="relative overflow-hidden bg-[#080d14] px-4 py-24 text-white sm:px-6 lg:py-36">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-[18%] top-20 h-80 rounded-full bg-[radial-gradient(circle,rgba(39,169,255,0.13),transparent_68%)] blur-3xl"
-      />
-
-      <div className="relative mx-auto max-w-[92rem]">
-        <div className="mx-auto mb-12 max-w-3xl text-center lg:mb-16">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-[#74c9ff]">
-            Doğru başlangıç noktası
-          </p>
-          <h2 className="text-balance text-[clamp(2.5rem,6vw,5.8rem)] font-medium leading-[0.93] tracking-[-0.06em]">
-            Projenizin rotasını birlikte belirleyelim.
-          </h2>
-        </div>
-
-        <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b121c]/90 shadow-[0_40px_120px_rgba(0,0,0,0.35)]">
-          <div className="flex flex-col gap-5 border-b border-white/10 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-            <div className="flex items-center gap-3">
-              <span
-                className={`h-2.5 w-2.5 rounded-full ${
-                  status === "running"
-                    ? "animate-pulse bg-[#74c9ff]"
-                    : status === "landed"
-                      ? "bg-emerald-400"
-                      : "bg-white/35"
-                }`}
-              />
-              <p className="text-sm text-white/58">
-                {status === "running"
-                  ? "VICE rotayı hesaplıyor"
-                  : status === "landed"
-                    ? `${routes[selected].label} rotası hazır`
-                    : "Bir rota oluşturun veya doğrudan seçim yapın"}
+    <div className={`${styles.root} ${className}`}>
+      <div className={styles.shell}>
+        <section
+          className={`${styles.panel} ${open ? styles.panelOpen : ""}`}
+          role="dialog"
+          aria-label="Yapay zekâ eforu"
+          aria-hidden={!open}
+          data-phase={phase}
+          data-ultra={selected === STOPS.length - 1}
+        >
+          <header className={styles.header}>
+            <div className={styles.copy}>
+              <h3 className={styles.title}>Yapay zekâ eforu</h3>
+              <p className={styles.status} aria-live="polite">
+                {status}
               </p>
             </div>
-
-            <div className="flex items-center gap-2">
-              {status !== "ready" && (
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/10 px-4 text-sm text-white/62 transition-colors hover:border-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#74c9ff]"
-                >
-                  <ArrowClockwise size={17} aria-hidden="true" />
-                  Sıfırla
-                </button>
-              )}
+            <div className={styles.headerActions}>
               <button
+                className={styles.again}
                 type="button"
-                onClick={() => dropBall()}
-                disabled={status === "running"}
-                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-[#07101b] transition-[transform,background-color] hover:scale-[1.02] hover:bg-[#dff4ff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#74c9ff] disabled:cursor-wait disabled:opacity-60"
+                onClick={startDrop}
+                disabled={phase === "dropping"}
+                aria-label="Yapay zekâ eforunu yeniden seç"
+                aria-busy={phase === "dropping"}
               >
-                {status === "landed" ? "Yeniden seç" : "Rota oluştur"}
-                <ArrowRight size={17} weight="bold" aria-hidden="true" />
+                <span className={styles.actionDot} aria-hidden="true" />
+                <span className={styles.actionLabel}>
+                  {phase === "dropping" ? "Seçiliyor" : "Tekrar"}
+                </span>
+                <Lightning
+                  className={styles.bolt}
+                  size={11}
+                  weight="fill"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                className={styles.close}
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Yapay zekâ eforu panelini kapat"
+              >
+                <X size={16} aria-hidden="true" />
               </button>
             </div>
+          </header>
+
+          <div ref={fieldRef} className={styles.fieldArea} aria-hidden="true">
+            <div className={styles.pegBoard}>
+              {PEG_POSITIONS.map((peg, index) => (
+                <span
+                  key={`${peg.left}-${peg.top}`}
+                  ref={(element) => {
+                    pegRefs.current[index] = element;
+                  }}
+                  className={styles.peg}
+                  style={{ left: `${peg.left}%`, top: `${peg.top}%` }}
+                />
+              ))}
+            </div>
+            <svg
+              ref={flightPathRef}
+              className={styles.flightPath}
+              preserveAspectRatio="none"
+            >
+              <path ref={flightPathGlowRef} className={styles.flightPathGlow} />
+              <path ref={flightPathCoreRef} className={styles.flightPathCore} />
+            </svg>
+            <div ref={pocketsRef} className={styles.pockets}>
+              {STOPS.map((stop, index) => (
+                <span
+                  key={stop.id}
+                  className={`${styles.pocket} ${
+                    selected === index ? styles.pocketActive : ""
+                  }`}
+                />
+              ))}
+            </div>
+            <span className={styles.dropGate} />
+            <span ref={trailRef} className={styles.trail} />
+            <span ref={impactRef} className={styles.impact} />
+            <span
+              className={`${styles.landingGlow} ${
+                landingSlot !== null ? styles.landingFire : ""
+              }`}
+              style={{
+                "--burst-x": `${STOP_POSITIONS[landingSlot ?? selected]}%`,
+              } as CSSProperties}
+            />
+            <span
+              className={`${styles.landingBurst} ${
+                landingSlot !== null ? styles.landingFire : ""
+              }`}
+              style={{
+                "--burst-x": `${STOP_POSITIONS[landingSlot ?? selected]}%`,
+              } as CSSProperties}
+            >
+              {Array.from({ length: 8 }).map((_, index) => (
+                <i key={index} />
+              ))}
+            </span>
+            <span
+              ref={ballRef}
+              className={`${styles.ball} ${
+                landingSlot !== null ? styles.ballLanding : ""
+              }`}
+            />
+          </div>
+
+          <div className={styles.stopRow} aria-hidden="true">
+            {STOPS.map((stop, index) => (
+              <span
+                key={stop.id}
+                className={`${styles.stopLabel} ${
+                  selected === index ? styles.stopLabelActive : ""
+                }`}
+              >
+                {stop.id === "extra-high" ? (
+                  <>
+                    Çok
+                    <br />
+                    Yüksek
+                  </>
+                ) : (
+                  stop.label
+                )}
+              </span>
+            ))}
           </div>
 
           <div
-            ref={boardRef}
-            className="relative h-[31rem] overflow-hidden sm:h-[35rem] lg:h-[39rem]"
+            className={styles.slider}
+            aria-hidden="true"
+            style={{
+              "--position": STOP_POSITIONS[selected],
+            } as CSSProperties}
           >
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:linear-gradient(to_bottom,black,transparent_92%)]"
-            />
-
-            <span
-              ref={ballRef}
-              aria-hidden="true"
-              className="absolute left-1/2 top-7 z-20 h-8 w-8 rounded-full border border-white/60 bg-[radial-gradient(circle_at_32%_28%,#ffffff_0_9%,#8cd8ff_22%,#288fd4_55%,#0b4e84_100%)] shadow-[0_0_28px_rgba(73,177,255,0.75)] will-change-transform"
-              style={{
-                transform: "translate3d(0px, 0px, 0) translateX(-50%)",
-              }}
-            />
-
-            <div className="absolute inset-x-[8%] top-24 bottom-32">
-              {pegRows.map((pegCount, rowIndex) => (
-                <div
-                  key={`${pegCount}-${rowIndex}`}
-                  className="absolute left-0 right-0 flex justify-around"
-                  style={{ top: `${rowIndex * 20}%` }}
-                >
-                  {Array.from({ length: pegCount }).map((_, pegIndex) => (
-                    <span
-                      key={pegIndex}
-                      className="h-3 w-3 rounded-full border border-white/20 bg-white/8 shadow-[0_0_16px_rgba(116,201,255,0.08)]"
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            <div className="absolute inset-x-2 bottom-0 grid h-28 grid-cols-6 sm:inset-x-6">
-              {routes.map((route, index) => {
-                const Icon = route.icon;
-                const isSelected = status === "landed" && selected === index;
-
-                return (
-                  <button
-                    key={route.label}
-                    type="button"
-                    onClick={() => dropBall(index)}
-                    disabled={status === "running"}
-                    aria-label={`${route.label} rotasını seç`}
-                    className={`group relative flex min-w-0 flex-col items-center justify-center gap-2 border-l border-white/8 px-1 text-center transition-colors first:border-l-0 focus-visible:z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#74c9ff] ${
-                      isSelected
-                        ? "bg-[#74c9ff]/10 text-white"
-                        : "text-white/40 hover:bg-white/[0.035] hover:text-white/72"
-                    }`}
-                  >
-                    <Icon
-                      size={20}
-                      weight={isSelected ? "fill" : "regular"}
-                      aria-hidden="true"
-                    />
-                    <span className="max-w-full truncate text-[10px] font-medium sm:text-xs">
-                      {route.shortLabel}
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className={`absolute inset-x-3 bottom-0 h-px transition-colors ${
-                        isSelected ? "bg-[#74c9ff]" : "bg-transparent"
-                      }`}
-                    />
-                  </button>
-                );
-              })}
+            <div className={styles.rail}>
+              <div className={styles.fill} />
+              <div className={styles.railDots}>
+                {STOP_POSITIONS.map((position) => (
+                  <span
+                    key={position}
+                    className={styles.railDot}
+                    style={{ left: `${position}%` }}
+                  />
+                ))}
+              </div>
+              <span className={styles.thumb} />
             </div>
           </div>
+        </section>
 
-          <div className="grid border-t border-white/10 lg:grid-cols-[0.78fr_1.22fr]">
-            <div className="flex min-h-48 items-center justify-center border-b border-white/10 p-8 lg:border-b-0 lg:border-r">
-              <div className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] border border-[#74c9ff]/30 bg-[#74c9ff]/10 text-[#9bd9ff] shadow-[0_0_40px_rgba(53,168,237,0.11)]">
-                <SelectedIcon size={42} weight="duotone" aria-hidden="true" />
-              </div>
-            </div>
-            <div className="flex min-h-48 flex-col justify-center p-7 sm:p-10 lg:p-12">
-              <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#74c9ff]">
-                <Check size={15} weight="bold" aria-hidden="true" />
-                Önerilen rota
-              </div>
-              <h3 className="mb-3 text-3xl font-medium tracking-[-0.04em] sm:text-4xl">
-                {routes[selected].label}
-              </h3>
-              <p className="max-w-2xl text-base leading-7 text-white/55 sm:text-lg sm:leading-8">
-                {routes[selected].description}
-              </p>
-            </div>
-          </div>
-        </div>
+        <button
+          className={styles.trigger}
+          type="button"
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          onClick={() => setOpen((value) => !value)}
+        >
+          <span className={styles.triggerMain}>VICE AI</span>
+          <span className={styles.triggerChoice}>
+            {phase === "dropping" ? "Seçiliyor..." : STOPS[selected].label}
+          </span>
+          <CaretDown
+            className={`${styles.triggerChevron} ${
+              open ? styles.triggerChevronOpen : ""
+            }`}
+            size={10}
+            aria-hidden="true"
+          />
+        </button>
       </div>
-    </section>
+    </div>
   );
 }
