@@ -41,13 +41,19 @@ export function CommerceSystemStory() {
       if (!sticky) return;
 
       const copies = gsap.utils.toArray<HTMLElement>("[data-station-copy]", sticky);
+      const markers = gsap.utils.toArray<HTMLElement>("[data-station-marker]", sticky);
       const dots = gsap.utils.toArray<HTMLElement>("[data-station-dot]", sticky);
       const line = sticky.querySelector<HTMLElement>("[data-station-line]");
       const media = gsap.matchMedia();
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.set(copies.slice(1), { autoAlpha: 0, transform: "translate3d(0, 30px, 0)" });
-        gsap.set(line, { transformOrigin: "left center", transform: "scaleX(0)" });
+        gsap.set(copies, { autoAlpha: 0, yPercent: -50, y: 30 });
+        gsap.set(copies[0], { autoAlpha: 1, yPercent: -50, y: 0 });
+        gsap.set(markers, { color: "rgba(220, 232, 245, 0.35)" });
+        gsap.set(markers[0], { color: "#f7f9fc" });
+        gsap.set(dots, { backgroundColor: "#070b11", borderColor: "rgba(220, 235, 250, 0.24)", boxShadow: "none" });
+        gsap.set(dots[0], { backgroundColor: "#bfe8ff", borderColor: "#bfe8ff", boxShadow: "0 0 0 8px rgba(112, 196, 255, 0.12)" });
+        gsap.set(line, { transformOrigin: "left center", scaleX: 1 / STATIONS.length });
 
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -55,28 +61,39 @@ export function CommerceSystemStory() {
             start: "top top",
             end: "bottom bottom",
             scrub: 0.45,
+            invalidateOnRefresh: true,
           },
         });
 
-        dots.forEach((dot, index) => {
+        dots.slice(1).forEach((dot, dotIndex) => {
+          const index = dotIndex + 1;
           const at = index;
-          if (index > 0) {
-            timeline
-              .to(copies[index - 1], { autoAlpha: 0, transform: "translate3d(0, -28px, 0)", duration: 0.2, ease: "power3.inOut" }, at - 0.12)
-              .to(copies[index], { autoAlpha: 1, transform: "translate3d(0, 0, 0)", duration: 0.22, ease: "power3.out" }, at + 0.08);
-          }
-          timeline.to(dot, { backgroundColor: "#bfe8ff", boxShadow: "0 0 0 8px rgba(112, 196, 255, 0.12)", duration: 0.12 }, at);
-          timeline.to(line, { transform: `scaleX(${(index + 1) / dots.length})`, duration: 0.8, ease: "none" }, at);
+
+          timeline
+            .to(copies[index - 1], { autoAlpha: 0, yPercent: -50, y: -28, duration: 0.2, ease: "power3.inOut" }, at - 0.18)
+            .to(copies[index], { autoAlpha: 1, yPercent: -50, y: 0, duration: 0.22, ease: "power3.out" }, at + 0.04)
+            .to(markers[index - 1], { color: "rgba(220, 232, 245, 0.35)", duration: 0.18 }, at)
+            .to(markers[index], { color: "#f7f9fc", duration: 0.18 }, at)
+            .to(dot, { backgroundColor: "#bfe8ff", borderColor: "#bfe8ff", boxShadow: "0 0 0 8px rgba(112, 196, 255, 0.12)", duration: 0.14 }, at)
+            .to(line, { scaleX: (index + 1) / dots.length, duration: 0.55, ease: "none" }, at);
         });
 
-        return () => timeline.kill();
+        timeline.to({}, { duration: 0.6 });
+
+        return () => {
+          timeline.scrollTrigger?.kill();
+          timeline.kill();
+        };
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(copies, { autoAlpha: 0 });
-        gsap.set(copies[0], { autoAlpha: 1, transform: "none" });
-        gsap.set(dots[0], { backgroundColor: "#bfe8ff" });
-        gsap.set(line, { transform: "scaleX(0.25)" });
+        gsap.set(copies[0], { autoAlpha: 1, yPercent: -50, y: 0 });
+        gsap.set(markers, { color: "rgba(220, 232, 245, 0.35)" });
+        gsap.set(markers[0], { color: "#f7f9fc" });
+        gsap.set(dots, { backgroundColor: "#070b11", boxShadow: "none" });
+        gsap.set(dots[0], { backgroundColor: "#bfe8ff", boxShadow: "0 0 0 8px rgba(112, 196, 255, 0.12)" });
+        gsap.set(line, { scaleX: 1 / STATIONS.length });
       });
 
       return () => media.revert();
@@ -107,7 +124,7 @@ export function CommerceSystemStory() {
             <span data-station-line />
           </div>
           {STATIONS.map((station) => (
-            <div key={station.name} className={styles.station}>
+            <div key={station.name} className={styles.station} data-station-marker>
               <i data-station-dot aria-hidden="true" />
               <span>{station.name}</span>
             </div>

@@ -20,8 +20,6 @@ export function EcommerceHero() {
 
   useGSAP(
     () => {
-      if (!ready) return;
-
       const stage = stageRef.current;
       const video = videoRef.current;
       const opening = openingRef.current;
@@ -33,7 +31,7 @@ export function EcommerceHero() {
       const media = gsap.matchMedia();
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.set(city, { autoAlpha: 0, transform: "translate3d(0, 20px, 0)" });
+        gsap.set(city, { autoAlpha: 0, filter: "blur(10px)" });
         gsap.set(progress, { transformOrigin: "left center", transform: "scaleX(0)" });
 
         const timeline = gsap.timeline({
@@ -46,6 +44,7 @@ export function EcommerceHero() {
             scrub: 0.35,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            refreshPriority: 10,
           },
         });
 
@@ -56,7 +55,8 @@ export function EcommerceHero() {
             {
               autoAlpha: 0,
               filter: "blur(12px)",
-              transform: "translate3d(0, -28px, 0) scale(0.97)",
+              y: -28,
+              scale: 0.97,
               duration: 0.24,
             },
             0.08,
@@ -66,26 +66,34 @@ export function EcommerceHero() {
             {
               autoAlpha: 1,
               filter: "blur(0px)",
-              transform: "translate3d(0, 0, 0)",
               duration: 0.18,
               ease: "power3.out",
             },
             0.79,
           );
 
-        return () => timeline.kill();
+        const refreshFrame = window.requestAnimationFrame(() => {
+          ScrollTrigger.sort();
+          ScrollTrigger.refresh();
+        });
+
+        return () => {
+          window.cancelAnimationFrame(refreshFrame);
+          timeline.scrollTrigger?.kill();
+          timeline.kill();
+        };
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(opening, { autoAlpha: 0 });
-        gsap.set(city, { autoAlpha: 1, transform: "none", filter: "none" });
+        gsap.set(city, { autoAlpha: 1, filter: "none" });
         gsap.set(progress, { transform: "scaleX(1)" });
         if (durationRef.current > 0) video.currentTime = durationRef.current * 0.92;
       });
 
       return () => media.revert();
     },
-    { scope: rootRef, dependencies: [ready], revertOnUpdate: true },
+    { scope: rootRef },
   );
 
   return (
@@ -108,8 +116,10 @@ export function EcommerceHero() {
               event.currentTarget.currentTime = durationRef.current * 0.92;
             }
             setReady(true);
-            ScrollTrigger.refresh();
-            ScrollTrigger.update();
+            window.requestAnimationFrame(() => {
+              ScrollTrigger.sort();
+              ScrollTrigger.refresh();
+            });
           }}
         />
 

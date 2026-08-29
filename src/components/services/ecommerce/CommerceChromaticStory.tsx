@@ -44,8 +44,10 @@ export function CommerceChromaticStory() {
       const media = gsap.matchMedia();
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.set(copies.slice(1), { autoAlpha: 0, transform: "translate3d(0, 42px, 0)" });
-        gsap.set(meter, { transformOrigin: "left center", transform: "scaleX(0)" });
+        gsap.set(copies, { autoAlpha: 0, y: 42 });
+        gsap.set(copies[0], { autoAlpha: 1, y: 0 });
+        gsap.set(layers, { xPercent: 0, yPercent: 0, rotation: 0, scale: 1 });
+        gsap.set(meter, { transformOrigin: "left center", scaleX: 1 / CHAPTERS.length });
 
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -53,29 +55,33 @@ export function CommerceChromaticStory() {
             start: "top top",
             end: "bottom bottom",
             scrub: 0.6,
+            invalidateOnRefresh: true,
           },
         });
 
         timeline
-          .to(meter, { transform: "scaleX(0.5)", duration: 1, ease: "none" }, 0)
-          .to(copies[0], { autoAlpha: 0, transform: "translate3d(0, -36px, 0)", duration: 0.22, ease: "power3.inOut" }, 0.7)
-          .to(layers[0], { transform: "translate3d(-22%, -6%, 0) rotate(-5deg) scale(1.12)", duration: 1, ease: "power3.inOut" }, 0.55)
-          .to(layers[1], { transform: "translate3d(18%, 8%, 0) rotate(7deg) scale(1.08)", duration: 1, ease: "power3.inOut" }, 0.55)
-          .to(copies[1], { autoAlpha: 1, transform: "translate3d(0, 0, 0)", duration: 0.25, ease: "power3.out" }, 0.9)
-          .to(meter, { transform: "scaleX(0.78)", duration: 1, ease: "none" }, 1)
-          .to(copies[1], { autoAlpha: 0, transform: "translate3d(0, -36px, 0)", duration: 0.22, ease: "power3.inOut" }, 1.7)
-          .to(layers[2], { transform: "translate3d(-16%, 10%, 0) rotate(4deg) scale(1.18)", duration: 1, ease: "power3.inOut" }, 1.55)
-          .to(layers[3], { transform: "translate3d(13%, -12%, 0) rotate(-6deg) scale(1.12)", duration: 1, ease: "power3.inOut" }, 1.55)
-          .to(copies[2], { autoAlpha: 1, transform: "translate3d(0, 0, 0)", duration: 0.25, ease: "power3.out" }, 1.9)
-          .to(meter, { transform: "scaleX(1)", duration: 0.9, ease: "none" }, 2);
+          .to(copies[0], { autoAlpha: 0, y: -36, duration: 0.22, ease: "power3.inOut" }, 0.7)
+          .to(layers[0], { xPercent: -22, yPercent: -6, rotation: -5, scale: 1.12, duration: 1, ease: "power3.inOut" }, 0.55)
+          .to(layers[1], { xPercent: 18, yPercent: 8, rotation: 7, scale: 1.08, duration: 1, ease: "power3.inOut" }, 0.55)
+          .to(copies[1], { autoAlpha: 1, y: 0, duration: 0.25, ease: "power3.out" }, 0.9)
+          .to(meter, { scaleX: 2 / CHAPTERS.length, duration: 0.45, ease: "none" }, 0.8)
+          .to(copies[1], { autoAlpha: 0, y: -36, duration: 0.22, ease: "power3.inOut" }, 1.7)
+          .to(layers[2], { xPercent: -16, yPercent: 10, rotation: 4, scale: 1.18, duration: 1, ease: "power3.inOut" }, 1.55)
+          .to(layers[3], { xPercent: 13, yPercent: -12, rotation: -6, scale: 1.12, duration: 1, ease: "power3.inOut" }, 1.55)
+          .to(copies[2], { autoAlpha: 1, y: 0, duration: 0.25, ease: "power3.out" }, 1.9)
+          .to(meter, { scaleX: 1, duration: 0.45, ease: "none" }, 1.8)
+          .to({}, { duration: 0.65 });
 
-        return () => timeline.kill();
+        return () => {
+          timeline.scrollTrigger?.kill();
+          timeline.kill();
+        };
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(copies, { autoAlpha: 0 });
         gsap.set(copies[0], { autoAlpha: 1, transform: "none" });
-        gsap.set(meter, { transform: "scaleX(1)" });
+        gsap.set(meter, { scaleX: 1 / CHAPTERS.length });
       });
 
       return () => media.revert();
