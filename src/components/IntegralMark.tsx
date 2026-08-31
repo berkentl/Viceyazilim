@@ -53,7 +53,7 @@ export function IntegralMark() {
     >
       <div
         aria-hidden="true"
-        className="absolute inset-[-25%] rounded-full opacity-70 blur-3xl"
+        className="pointer-events-none absolute inset-[-25%] rounded-full opacity-70 blur-3xl"
         style={{
           background:
             "radial-gradient(closest-side, oklch(0.4 0.06 255 / 55%), transparent 72%)",
