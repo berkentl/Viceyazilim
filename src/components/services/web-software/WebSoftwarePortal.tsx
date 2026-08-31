@@ -158,7 +158,7 @@ export function WebSoftwarePortal() {
             className="h-full w-full scale-100 object-cover will-change-transform"
           >
             <source
-              src="/web-design/Webtasarimajansi_vice.mp4"
+              src="/web-design/Webtasarimajansi_vice.mp4?v=3fc80653"
               type="video/mp4"
             />
           </video>
