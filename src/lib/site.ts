@@ -17,9 +17,9 @@ export const SITE = {
 } as const;
 
 export const DATA_CONTROLLER = {
-  name: "VICE Yazılım anonim şirketi",
+  name: "VICE Yazılım",
   role: "veri sorumlusu",
-  displayName: "VICE Yazılım anonim şirketi",
+  displayName: "VICE Yazılım",
   address: "İstanbul / Küçükçekmece",
 } as const;
 
