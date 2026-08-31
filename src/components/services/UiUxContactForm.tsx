@@ -4,6 +4,8 @@ import { useRef, useState, type FormEvent } from "react";
 import { ArrowUpRight } from "@phosphor-icons/react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
+import Link from "next/link";
+import { KVKK_NOTICE_VERSION } from "@/lib/privacy";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 type FieldErrors = Partial<
@@ -52,6 +54,7 @@ export function UiUxContactForm() {
     const projectType = String(data.get("projectType") ?? "");
     const message = String(data.get("message") ?? "").trim();
     const consent = data.get("consent") === "on";
+    const website = String(data.get("website") ?? "");
 
     if (name.length < 2) nextErrors.name = "Lütfen adınızı yazın.";
     if (!/^\S+@\S+\.\S+$/.test(email)) nextErrors.email = "Geçerli bir e-posta adresi yazın.";
@@ -72,7 +75,17 @@ export function UiUxContactForm() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, company: "", projectType, message }),
+        body: JSON.stringify({
+          name,
+          email,
+          company: "",
+          projectType,
+          message,
+          consent,
+          consentVersion: KVKK_NOTICE_VERSION,
+          source: "/hizmetler/ui-ux",
+          website,
+        }),
       });
 
       if (!response.ok) throw new Error("Request failed");
@@ -85,6 +98,7 @@ export function UiUxContactForm() {
 
   return (
     <form ref={formRef} className="grid content-start gap-x-8 md:grid-cols-2" onSubmit={handleSubmit} noValidate>
+      <input className="sr-only" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
       <LineField label="Ad soyad" name="name" autoComplete="name" error={errors.name} />
       <LineField label="E-posta" name="email" type="email" autoComplete="email" error={errors.email} />
 
@@ -128,7 +142,11 @@ export function UiUxContactForm() {
             name="consent"
             aria-invalid={Boolean(errors.consent)}
           />
-          <span>İletişim bilgilerimin bu talebe dönüş yapılması için kullanılmasını kabul ediyorum.</span>
+          <span>
+            <Link className="text-white/70 underline decoration-white/25 underline-offset-4" href="/kvkk-aydinlatma-metni">
+              KVKK Aydınlatma Metni
+            </Link>’ni okudum; bilgilerimin talebime dönüş yapılması için işlenmesini anladım.
+          </span>
         </label>
         {errors.consent && <ErrorMessage>{errors.consent}</ErrorMessage>}
       </div>

@@ -6,22 +6,18 @@ import { InstagramLogo } from "@phosphor-icons/react/dist/ssr/InstagramLogo";
 import { Phone } from "@phosphor-icons/react/dist/ssr/Phone";
 import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr/WhatsappLogo";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, createPageMetadata, webPageJsonLd } from "@/lib/seo";
 import styles from "@/components/contact/ContactPage.module.css";
 
-export const metadata: Metadata = {
-  title: "İletişim | Vice Yazılım",
-  description:
-    "Web tasarım, yazılım, e-ticaret ve dijital pazarlama projeniz için Vice Yazılım ile iletişime geçin.",
-  alternates: {
-    canonical: "/iletisim",
-  },
-  openGraph: {
-    title: "İletişim | Vice Yazılım",
-    description:
-      "Projenizi anlatın, ihtiyacınıza uygun kapsamı birlikte netleştirelim.",
-    url: "/iletisim",
-  },
-};
+const description = "Web tasarım, özel yazılım, e-ticaret, UI/UX, SEO veya Google Ads projeniz için Vice Yazılım'a ulaşın ve ihtiyacınıza uygun kapsamı birlikte netleştirelim.";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "İletişim",
+  description,
+  path: "/iletisim",
+  keywords: ["Vice Yazılım iletişim", "web tasarım teklifi", "yazılım proje teklifi"],
+});
 
 const CONTACT_CHANNELS = [
   {
@@ -60,6 +56,13 @@ const SOCIAL_LINKS = [
 export default function ContactPage() {
   return (
     <main className={styles.page}>
+      <JsonLd data={[
+        webPageJsonLd({ name: "Vice Yazılım İletişim", description, path: "/iletisim", type: "ContactPage" }),
+        breadcrumbJsonLd([
+          { name: "Ana Sayfa", path: "/" },
+          { name: "İletişim", path: "/iletisim" },
+        ]),
+      ]} />
       <div className={styles.ambient} aria-hidden="true" />
 
       <section className={styles.shell} aria-labelledby="contact-title">

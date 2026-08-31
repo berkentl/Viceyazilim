@@ -8,22 +8,23 @@ const COLUMNS = [
       { label: "Web Tasarım", href: "/hizmetler/web-tasarim" },
       { label: "E-Ticaret", href: "/hizmetler/e-ticaret" },
       { label: "UI & UX", href: "/hizmetler/ui-ux" },
-      { label: "SEO & Dijital Pazarlama", href: "/hizmetler/seo" },
+      { label: "Web Yazılım", href: "/hizmetler/web-yazilim" },
+      { label: "SEO", href: "/hizmetler/seo" },
+      { label: "Google Ads", href: "/hizmetler/google-ads" },
     ],
   },
   {
     heading: "Kurumsal",
     links: [
       { label: "Hakkımızda", href: "/kurumsal/hakkimizda" },
-      { label: "VICE Alevi", href: "/kurumsal/vice-alevi" },
-      { label: "Proje Süreçleri", href: "/kurumsal/proje-surecleri" },
+      { label: "KVKK Aydınlatma", href: "/kvkk-aydinlatma-metni" },
+      { label: "Gizlilik Politikası", href: "/gizlilik-politikasi" },
     ],
   },
   {
     heading: "Keşfet",
     links: [
       { label: "Referanslar", href: "/referanslar" },
-      { label: "Blog", href: "/blog" },
       { label: "İletişim", href: "/iletisim" },
     ],
   },

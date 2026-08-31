@@ -3,6 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { useId, useState, type FormEvent } from "react";
+import Link from "next/link";
+import { KVKK_NOTICE_VERSION } from "@/lib/privacy";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -17,6 +19,7 @@ export function NotifyForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
   const inputId = useId();
 
   const busy = status === "loading" || status === "success";
@@ -31,6 +34,12 @@ export function NotifyForm() {
       return;
     }
 
+    if (!consent) {
+      setStatus("error");
+      setMessage("Bildirim izni için onay kutusunu işaretleyin.");
+      return;
+    }
+
     setStatus("loading");
     setMessage(null);
 
@@ -38,7 +47,13 @@ export function NotifyForm() {
       const response = await fetch("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          consent,
+          consentVersion: KVKK_NOTICE_VERSION,
+          source: "/",
+          website: "",
+        }),
       });
 
       if (!response.ok) {
@@ -53,6 +68,7 @@ export function NotifyForm() {
       setStatus("success");
       setMessage("Kaydedildi. Lansmanı ilk senin haberin olacak.");
       setEmail("");
+      setConsent(false);
     } catch {
       setStatus("error");
       setMessage("Bağlantı kurulamadı, tekrar deneyin.");
@@ -61,14 +77,12 @@ export function NotifyForm() {
 
   return (
     <div className="w-full max-w-md">
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center gap-1 rounded-full bg-bg-elevated p-1.5 ring-1 ring-hairline transition-colors duration-300 ease-out focus-within:ring-hairline-strong"
-      >
-        <label htmlFor={inputId} className="sr-only">
-          E-posta adresi
-        </label>
-        <input
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="flex items-center gap-1 rounded-full bg-bg-elevated p-1.5 ring-1 ring-hairline transition-colors duration-300 ease-out focus-within:ring-hairline-strong">
+          <label htmlFor={inputId} className="sr-only">
+            E-posta adresi
+          </label>
+          <input
           id={inputId}
           name="email"
           type="email"
@@ -83,8 +97,8 @@ export function NotifyForm() {
           }}
           disabled={busy}
           className="min-w-0 flex-1 bg-transparent px-4 py-2.5 text-[15px] text-fg placeholder:text-fg-subtle focus:outline-none disabled:opacity-60"
-        />
-        <button
+          />
+          <button
           type="submit"
           disabled={busy}
           className="group flex shrink-0 items-center gap-2 rounded-full bg-fg py-2.5 pl-4 pr-2 text-[13px] font-medium text-bg transition-transform duration-150 ease-out active:scale-[0.97] disabled:pointer-events-none"
@@ -128,7 +142,24 @@ export function NotifyForm() {
               )}
             </AnimatePresence>
           </span>
-        </button>
+          </button>
+        </div>
+        <label className="flex cursor-pointer items-start gap-2 px-1 text-[12px] leading-5 text-fg-subtle">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(event) => {
+              setConsent(event.target.checked);
+              if (status !== "idle") setStatus("idle");
+            }}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-fg"
+          />
+          <span>
+            <Link href="/kvkk-aydinlatma-metni" className="text-fg-muted underline decoration-hairline-strong underline-offset-4">
+              KVKK Aydınlatma Metni
+            </Link>’ni okudum ve lansman bildirimini almayı kabul ediyorum.
+          </span>
+        </label>
       </form>
 
       <div

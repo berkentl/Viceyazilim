@@ -7,6 +7,8 @@ import {
 } from "react";
 import { Check } from "@phosphor-icons/react/dist/csr/Check";
 import { PaperPlaneTilt } from "@phosphor-icons/react/dist/csr/PaperPlaneTilt";
+import Link from "next/link";
+import { KVKK_NOTICE_VERSION } from "@/lib/privacy";
 import styles from "./ContactPage.module.css";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
@@ -52,6 +54,7 @@ export function ContactForm() {
     const projectType = String(data.get("projectType") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
     const consent = data.get("consent") === "on";
+    const website = String(data.get("website") ?? "");
     const nextErrors: FieldErrors = {};
 
     if (name.length < 2) nextErrors.name = "Adınızı ve soyadınızı yazın.";
@@ -97,6 +100,10 @@ export function ContactForm() {
           company: "",
           projectType,
           message,
+          consent,
+          consentVersion: KVKK_NOTICE_VERSION,
+          source: "/iletisim",
+          website,
         }),
       });
 
@@ -126,6 +133,14 @@ export function ContactForm() {
       noValidate
       aria-busy={status === "submitting"}
     >
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className={styles.honeypot}
+      />
       <div className={styles.fieldGrid}>
         <Field
           label="Ad soyad"
@@ -221,8 +236,9 @@ export function ContactForm() {
               onChange={() => clearError("consent")}
             />
             <span>
-              İletişim bilgilerimin bu talebe dönüş yapılması amacıyla
-              kullanılmasını kabul ediyorum.
+              <Link href="/kvkk-aydinlatma-metni">KVKK Aydınlatma Metni</Link>’ni
+              okudum; bilgilerimin talebime dönüş yapılması için işlenmesini
+              anladım.
             </span>
           </label>
           {errors.consent && (

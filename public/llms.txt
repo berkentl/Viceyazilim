@@ -1,0 +1,29 @@
+# Vice Yazılım
+
+> Vice Yazılım, Türkiye'deki markalar için web tasarım, özel web yazılım, e-ticaret, UI/UX, teknik SEO ve Google Ads sistemleri tasarlayan dijital ürün ve büyüme ajansıdır.
+
+## Temel sayfalar
+
+- [Ana sayfa](https://viceyazilim.com/): Ajansın yaklaşımı, hizmetleri ve seçilmiş işleri.
+- [Hakkımızda](https://viceyazilim.com/kurumsal/hakkimizda): Vice Yazılım'ın çalışma ilkeleri ve uzmanlık alanları.
+- [Referanslar](https://viceyazilim.com/referanslar): Yayındaki seçilmiş müşteri projeleri.
+- [İletişim](https://viceyazilim.com/iletisim): Proje talebi ve doğrulanmış iletişim kanalları.
+
+## Hizmetler
+
+- [Web tasarım](https://viceyazilim.com/hizmetler/web-tasarim)
+- [UI ve UX tasarım](https://viceyazilim.com/hizmetler/ui-ux)
+- [Özel web yazılım](https://viceyazilim.com/hizmetler/web-yazilim)
+- [E-ticaret çözümleri](https://viceyazilim.com/hizmetler/e-ticaret)
+- [SEO ve organik büyüme](https://viceyazilim.com/hizmetler/seo)
+- [Google Ads yönetimi](https://viceyazilim.com/hizmetler/google-ads)
+
+## Kurumsal bilgiler
+
+- Resmî web sitesi: https://viceyazilim.com
+- E-posta: info@viceyazilim.com
+- Telefon: +90 552 688 75 56
+- Dil: Türkçe
+- Hizmet alanı: Türkiye
+
+Bu dosya, site içeriğinin makine tarafından keşfini kolaylaştıran yardımcı bir içerik haritasıdır. Sayfaların asıl ve güncel içeriği yukarıdaki canonical URL'lerde yer alır.

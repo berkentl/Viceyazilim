@@ -24,26 +24,6 @@ export const NAV_ITEMS: NavItem[] = [
         links: [
           { label: "SEO", href: "/hizmetler/seo" },
           { label: "Google Ads Reklamları", href: "/hizmetler/google-ads" },
-          {
-            label: "Sosyal Medya Yönetimi",
-            href: "/hizmetler/sosyal-medya-yonetimi",
-          },
-          {
-            label: "Sosyal Medya Reklamları",
-            href: "/hizmetler/sosyal-medya-reklamlari",
-          },
-        ],
-      },
-      {
-        label: "Diğer Hizmetler",
-        links: [
-          {
-            label: "Teknik Destek ve Bakım",
-            href: "/hizmetler/teknik-destek-bakim",
-          },
-          { label: "Hosting ve Sunucu", href: "/hizmetler/hosting-sunucu" },
-          { label: "Kurumsal Mail", href: "/hizmetler/kurumsal-mail" },
-          { label: "İçerik Hizmeti", href: "/hizmetler/icerik-hizmeti" },
         ],
       },
     ],
@@ -52,11 +32,8 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Kurumsal",
     links: [
       { label: "Hakkımızda", href: "/kurumsal/hakkimizda" },
-      { label: "VICE Alevi", href: "/kurumsal/vice-alevi" },
-      { label: "Proje Süreçleri", href: "/kurumsal/proje-surecleri" },
     ],
   },
   { label: "Referanslar", href: "/referanslar" },
-  { label: "Blog", href: "/blog" },
   { label: "İletişim", href: "/iletisim" },
 ];

@@ -1,25 +1,25 @@
 import type { Metadata } from "next";
 import { WebSoftwareExperience } from "@/components/services/web-software/WebSoftwareExperience";
+import { ServiceKnowledge } from "@/components/seo/ServiceKnowledge";
+import { ServiceSeo } from "@/components/seo/ServiceSeo";
+import { createPageMetadata } from "@/lib/seo";
+import { SERVICES } from "@/lib/services";
 
-export const metadata: Metadata = {
-  title: "Web Yazılım | Vice Yazılım",
-  description:
-    "İşinize göre tasarlanan özel web uygulamaları, SaaS platformları, API entegrasyonları ve güvenli veri altyapıları geliştiriyoruz.",
-  alternates: {
-    canonical: "/hizmetler/web-yazilim",
-  },
-  openGraph: {
-    title: "Web Yazılım | Vice Yazılım",
-    description:
-      "Fikirden çalışan ürüne uzanan, güvenli ve ölçeklenebilir web yazılım çözümleri.",
-    url: "/hizmetler/web-yazilim",
-  },
-};
+const service = SERVICES.webSoftware;
+
+export const metadata: Metadata = createPageMetadata({
+  title: service.title,
+  description: service.description,
+  path: service.path,
+  keywords: service.keywords,
+});
 
 export default function WebYazilimPage() {
   return (
     <main>
+      <ServiceSeo service={service} />
       <WebSoftwareExperience />
+      <ServiceKnowledge service={service} />
     </main>
   );
 }
