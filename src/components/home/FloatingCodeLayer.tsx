@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { useFinePointer } from "@/lib/useFinePointer";
 
 const FRAGMENTS = [
   { text: "<Navbar />", top: "10%", left: "4%", speed: 55 },
@@ -23,10 +24,11 @@ const FRAGMENTS = [
 export function FloatingCodeLayer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
 
   useGSAP(
     () => {
-      if (shouldReduceMotion || !containerRef.current) return;
+      if (shouldReduceMotion || !finePointer || !containerRef.current) return;
 
       const fragments =
         containerRef.current.querySelectorAll<HTMLElement>("[data-fragment]");
@@ -45,10 +47,10 @@ export function FloatingCodeLayer() {
         });
       });
     },
-    { scope: containerRef, dependencies: [shouldReduceMotion] },
+    { scope: containerRef, dependencies: [finePointer, shouldReduceMotion] },
   );
 
-  if (shouldReduceMotion) return null;
+  if (shouldReduceMotion || !finePointer) return null;
 
   return (
     <div

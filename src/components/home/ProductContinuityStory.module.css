@@ -570,6 +570,33 @@
   }
 }
 
+@media (hover: none), (pointer: coarse) {
+  .scrollStory {
+    height: 100svh;
+  }
+
+  .video {
+    display: none;
+  }
+
+  .videoMask {
+    will-change: auto;
+  }
+
+  .ticketPosition,
+  .stageIntro {
+    will-change: auto;
+  }
+
+  .stageIntro {
+    backdrop-filter: none;
+  }
+
+  .orbit {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-transparency: reduce) {
   .stageIntro,
   .tags li,

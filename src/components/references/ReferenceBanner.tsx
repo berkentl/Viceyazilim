@@ -135,7 +135,11 @@ function ArtworkCard({ reference, preload }: { reference: Reference; preload: bo
         />
       </picture>
 
-      <Logo tone={wide.tone} mobileTone={mobile.tone} />
+      <Logo
+        tone={wide.tone}
+        mobileTone={mobile.tone}
+        sizes="(min-width: 1024px) 86px, (min-width: 768px) 74px, 54px"
+      />
       <Copy
         reference={reference}
         tone={mobile.tone}
@@ -160,7 +164,10 @@ function WideCard({ reference, preload }: { reference: Reference; preload: boole
         prioritize={preload}
         className="h-full w-full object-cover"
       />
-      <Logo tone={wide.tone} />
+      <Logo
+        tone={wide.tone}
+        sizes="(min-width: 1024px) 86px, (min-width: 768px) 74px, 1px"
+      />
       <Copy
         reference={reference}
         tone={wide.tone}
@@ -182,7 +189,7 @@ function StackedCard({ reference, preload }: { reference: Reference; preload: bo
 
   return (
     <div className={`${FRAME} flex flex-col`} style={{ background: mobile.surface }}>
-      <Logo tone={mobile.tone} />
+      <Logo tone={mobile.tone} sizes="(max-width: 767px) 54px, 1px" />
       <Copy reference={reference} tone={mobile.tone} className="px-6 pb-8 pt-[4.75rem]" />
       <ViewportImage
         source={mobile}
@@ -239,7 +246,15 @@ function ViewportImage({
   );
 }
 
-function Logo({ tone, mobileTone }: { tone: ArtworkTone; mobileTone?: ArtworkTone }) {
+function Logo({
+  tone,
+  mobileTone,
+  sizes,
+}: {
+  tone: ArtworkTone;
+  mobileTone?: ArtworkTone;
+  sizes: string;
+}) {
   const desktop = TONE[tone].logo;
   const phone = TONE[mobileTone ?? tone].logo;
   const sameAsset = desktop.src === phone.src;
@@ -250,6 +265,7 @@ function Logo({ tone, mobileTone }: { tone: ArtworkTone; mobileTone?: ArtworkTon
         src={phone.src}
         width={phone.width}
         height={phone.height}
+        sizes={sizes}
         alt=""
         aria-hidden="true"
         className={`absolute left-5 top-5 z-10 h-7 w-auto ${
@@ -261,6 +277,7 @@ function Logo({ tone, mobileTone }: { tone: ArtworkTone; mobileTone?: ArtworkTon
           src={desktop.src}
           width={desktop.width}
           height={desktop.height}
+          sizes={sizes}
           alt=""
           aria-hidden="true"
           className="absolute left-12 top-10 z-10 hidden h-[38px] w-auto md:block lg:left-16 lg:h-[44px]"

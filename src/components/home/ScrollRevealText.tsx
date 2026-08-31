@@ -8,10 +8,12 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
+import { useFinePointer } from "@/lib/useFinePointer";
 
 export function ScrollRevealText({ text }: { text: string }) {
   const containerRef = useRef<HTMLParagraphElement>(null);
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 0.85", "start 0.2"],
@@ -30,7 +32,7 @@ export function ScrollRevealText({ text }: { text: string }) {
           word={word}
           progress={scrollYProgress}
           range={[index / words.length, (index + 1) / words.length]}
-          staticOpacity={Boolean(shouldReduceMotion)}
+          staticOpacity={Boolean(shouldReduceMotion || !finePointer)}
         />
       ))}
     </p>

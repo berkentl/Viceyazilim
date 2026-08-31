@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
+import { useFinePointer } from "@/lib/useFinePointer";
 import { MetalFill } from "./MetalFill";
 import { ROTATE_KEYFRAMES, rotateTransition } from "@/lib/brandMotion";
 
@@ -12,6 +13,8 @@ const MAX_TILT_DEG = 9;
 export function IntegralMark() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
+  const enableMotion = finePointer && !shouldReduceMotion;
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -27,7 +30,7 @@ export function IntegralMark() {
   });
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (shouldReduceMotion || !containerRef.current) return;
+    if (!enableMotion || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const relativeX = (event.clientX - rect.left) / rect.width - 0.5;
     const relativeY = (event.clientY - rect.top) / rect.height - 0.5;
@@ -58,20 +61,20 @@ export function IntegralMark() {
       />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.92, filter: "blur(12px)" }}
-        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+        initial={enableMotion ? { opacity: 0, scale: 0.92, filter: "blur(12px)" } : false}
+        animate={enableMotion ? { opacity: 1, scale: 1, filter: "blur(0px)" } : undefined}
         transition={{ type: "spring", bounce: 0, duration: 0.9, delay: 0.2 }}
         style={{
-          rotateX: shouldReduceMotion ? 0 : springRotateX,
-          rotateY: shouldReduceMotion ? 0 : springRotateY,
+          rotateX: enableMotion ? springRotateX : 0,
+          rotateY: enableMotion ? springRotateY : 0,
           transformStyle: "preserve-3d",
         }}
         className="relative h-full w-full"
       >
         <motion.div
           className="relative h-full w-full"
-          animate={shouldReduceMotion ? undefined : { rotate: ROTATE_KEYFRAMES }}
-          transition={shouldReduceMotion ? undefined : rotateTransition(1.4)}
+          animate={enableMotion ? { rotate: ROTATE_KEYFRAMES } : undefined}
+          transition={enableMotion ? rotateTransition(1.4) : undefined}
         >
           <MetalFill maskSrc={MARK_SRC} />
         </motion.div>

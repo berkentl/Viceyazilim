@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
+import { useFinePointer } from "@/lib/useFinePointer";
 
 const METAL_GRADIENT =
   "linear-gradient(135deg, #ffffff 0%, #f2f3f5 32%, #dfe1e5 58%, #c3c6cc 78%, #a3a6ad 100%)";
@@ -24,6 +25,8 @@ const MASK_STYLE = {
  */
 export function MetalFill({ maskSrc }: { maskSrc: string }) {
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
+  const enableMotion = finePointer && !shouldReduceMotion;
 
   const maskImage = {
     WebkitMaskImage: `url(${maskSrc})`,
@@ -52,12 +55,12 @@ export function MetalFill({ maskSrc }: { maskSrc: string }) {
           filter:
             "brightness(1.1) contrast(1.05) drop-shadow(-1px -1px 1px rgba(255,255,255,0.7)) drop-shadow(1.5px 2px 3px rgba(0,0,0,0.35))",
         }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={enableMotion ? { opacity: 0 } : false}
+        animate={enableMotion ? { opacity: 1 } : undefined}
         transition={
-          shouldReduceMotion
-            ? { duration: 0.01 }
-            : { duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.1 }
+          enableMotion
+            ? { duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.1 }
+            : undefined
         }
       />
     </>

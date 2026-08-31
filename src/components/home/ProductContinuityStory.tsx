@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { ArrowUpRight, Check, Pulse } from "@phosphor-icons/react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
+import { useFinePointer } from "@/lib/useFinePointer";
 import styles from "./ProductContinuityStory.module.css";
 
 const CONTINUITY_TAGS = [
@@ -17,6 +18,8 @@ const CONTINUITY_TAGS = [
 export function ProductContinuityStory() {
   const storyRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
+  const useStaticMotion = shouldReduceMotion || !finePointer;
   const { scrollYProgress } = useScroll({
     target: storyRef,
     offset: ["start start", "end end"],
@@ -75,33 +78,21 @@ export function ProductContinuityStory() {
             aria-hidden="true"
             className={styles.videoMask}
             style={{
-              clipPath: shouldReduceMotion
+              clipPath: useStaticMotion
                 ? "circle(92% at 50% 48%)"
                 : videoClipPath,
-              scale: shouldReduceMotion ? 1 : videoScale,
+              scale: useStaticMotion ? 1 : videoScale,
             }}
           >
-            <video
-              autoPlay={!shouldReduceMotion}
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className={styles.video}
-            >
-              <source
-                src="/web-design/Webtasarimajansi_vice.mp4?v=3fc80653"
-                type="video/mp4"
-              />
-            </video>
+            <ContinuityVideo enabled={!useStaticMotion} />
             <div className={styles.videoShade} />
           </motion.div>
 
           <motion.div
             className={styles.stageIntro}
             style={{
-              opacity: shouldReduceMotion ? 0 : introOpacity,
-              y: shouldReduceMotion ? -24 : introY,
+              opacity: useStaticMotion ? 0 : introOpacity,
+              y: useStaticMotion ? -24 : introY,
             }}
           >
             <span className={styles.liveDot} />
@@ -116,9 +107,9 @@ export function ProductContinuityStory() {
           <motion.div
             className={styles.ticketPosition}
             style={{
-              opacity: shouldReduceMotion ? 1 : ticketOpacity,
-              y: shouldReduceMotion ? 0 : ticketY,
-              rotate: shouldReduceMotion ? -1.25 : ticketRotate,
+              opacity: useStaticMotion ? 1 : ticketOpacity,
+              y: useStaticMotion ? 0 : ticketY,
+              rotate: useStaticMotion ? -1.25 : ticketRotate,
             }}
           >
             <ProductPassport />
@@ -126,7 +117,7 @@ export function ProductContinuityStory() {
 
           <motion.div
             className={styles.stageFooter}
-            style={{ opacity: shouldReduceMotion ? 1 : footerOpacity }}
+            style={{ opacity: useStaticMotion ? 1 : footerOpacity }}
           >
             <p>Her sürüm, bir sonrakine veri bırakır.</p>
             <span>VICE Continuity</span>
@@ -149,6 +140,62 @@ export function ProductContinuityStory() {
         </Link>
       </div>
     </section>
+  );
+}
+
+function ContinuityVideo({ enabled }: { enabled: boolean }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !enabled) return;
+
+    let isNearViewport = false;
+    const syncPlayback = () => {
+      if (!isNearViewport || document.hidden) {
+        video.pause();
+        return;
+      }
+
+      if (!video.getAttribute("src")) {
+        video.src = "/web-design/Webtasarimajansi_vice.mp4?v=3fc80653";
+        video.load();
+      }
+      void video.play().catch(() => {
+        // The gradient background remains visible if autoplay is unavailable.
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isNearViewport = entry.isIntersecting;
+        syncPlayback();
+      },
+      { rootMargin: "240px 0px", threshold: 0.01 },
+    );
+
+    observer.observe(video);
+    document.addEventListener("visibilitychange", syncPlayback);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", syncPlayback);
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+    };
+  }, [enabled]);
+
+  return (
+    <video
+      ref={videoRef}
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden="true"
+      className={styles.video}
+    />
   );
 }
 

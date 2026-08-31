@@ -11,6 +11,7 @@ import { ChartLineUp } from "@phosphor-icons/react/dist/ssr/ChartLineUp";
 import { MotionCard } from "@/components/motion/MotionCard";
 import { FloatingCodeLayer } from "@/components/home/FloatingCodeLayer";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { useFinePointer } from "@/lib/useFinePointer";
 
 const ITEMS: {
   label: string;
@@ -52,10 +53,11 @@ const ITEMS: {
 export function ServicesStrip() {
   const gridRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
 
   useGSAP(
     () => {
-      if (shouldReduceMotion || !gridRef.current) return;
+      if (shouldReduceMotion || !finePointer || !gridRef.current) return;
 
       const cards =
         gridRef.current.querySelectorAll<HTMLElement>("[data-service-card]");
@@ -81,7 +83,7 @@ export function ServicesStrip() {
         );
       });
     },
-    { scope: gridRef, dependencies: [shouldReduceMotion] },
+    { scope: gridRef, dependencies: [finePointer, shouldReduceMotion] },
   );
 
   return (

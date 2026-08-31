@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowUpRight, InstagramLogo } from "@phosphor-icons/react";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
+import { useFinePointer } from "@/lib/useFinePointer";
 
 const INSTAGRAM_URL = "https://www.instagram.com/viceyazilim/";
 const INSTAGRAM_VIDEO_SRC = "/vice-gallery/instagram-feed.m4v";
@@ -41,6 +42,7 @@ const BRAND_FRAMES = [
 
 export function AgencyFeatures() {
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
 
   return (
     <section className="px-6 pb-28 md:px-12 md:pb-40">
@@ -91,7 +93,7 @@ export function AgencyFeatures() {
               title="Süreç, yayına dönüştüğünde."
               description="Stüdyo notlarını ve Vice’ın güncel üretimlerini hareketli içeriklerle paylaşıyoruz."
             >
-              <InstagramSurface shouldReduceMotion={shouldReduceMotion} />
+              <InstagramSurface shouldReduceMotion={shouldReduceMotion || !finePointer} />
             </FeaturePanel>
 
             <FeaturePanel

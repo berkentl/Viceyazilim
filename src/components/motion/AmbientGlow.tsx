@@ -8,7 +8,7 @@ export function AmbientGlow() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      className="ambient-glow pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
       <div
         className="absolute -top-40 right-[-10%] h-[36rem] w-[36rem] rounded-full opacity-60 blur-3xl"

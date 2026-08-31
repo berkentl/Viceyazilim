@@ -80,7 +80,7 @@ export function NavMenuOverlay({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35, ease: EASE_OUT_QUART }}
-      className="fixed inset-0 z-40 flex flex-col bg-bg/95 backdrop-blur-2xl"
+      className="mobile-menu-overlay fixed inset-0 z-40 flex flex-col bg-bg/95 backdrop-blur-2xl"
     >
       <div className="flex items-center px-6 pt-24 md:px-12">
         {drilledInto && (
@@ -149,7 +149,7 @@ export function NavMenuOverlay({ onClose }: { onClose: () => void }) {
               >
                 <a
                   href="tel:+905526887556"
-                  className="mb-7 flex items-center gap-4 text-[15px] font-medium text-fg/78 transition-colors duration-200 hover:text-fg focus-visible:text-fg focus-visible:outline-none"
+                  className="mb-4 flex items-center gap-4 text-[15px] font-medium text-fg/78 transition-colors duration-200 hover:text-fg focus-visible:text-fg focus-visible:outline-none"
                 >
                   <Phone size={24} weight="light" />
                   <span>+90 552 688 75 56</span>
