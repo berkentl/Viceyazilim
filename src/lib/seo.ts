@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { absoluteUrl, DATA_CONTROLLER, SITE } from "@/lib/site";
+import { absoluteUrl, DATA_CONTROLLER, FOUNDER_NAME, SITE } from "@/lib/site";
 
 type PageMetadataInput = {
   title: string;
@@ -81,6 +81,7 @@ export function organizationJsonLd() {
     "@type": ["Organization", "ProfessionalService"],
     "@id": absoluteUrl("/#organization"),
     name: SITE.name,
+    legalName: DATA_CONTROLLER.name,
     alternateName: SITE.shortName,
     url: SITE.url,
     logo: absoluteUrl("/brand/mark-navy.png"),
@@ -90,7 +91,7 @@ export function organizationJsonLd() {
     telephone: SITE.phone,
     founder: {
       "@type": "Person",
-      name: DATA_CONTROLLER.name,
+      name: FOUNDER_NAME,
     },
     address: {
       "@type": "PostalAddress",

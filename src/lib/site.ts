@@ -17,11 +17,13 @@ export const SITE = {
 } as const;
 
 export const DATA_CONTROLLER = {
-  name: "Berken Timur",
-  role: "Vice Yazılım sahibi",
-  displayName: "Berken Timur — Vice Yazılım sahibi",
+  name: "VICE Yazılım anonim şirketi",
+  role: "veri sorumlusu",
+  displayName: "VICE Yazılım anonim şirketi",
   address: "İstanbul / Küçükçekmece",
 } as const;
+
+export const FOUNDER_NAME = "Berken Timur";
 
 export const CONTENT_LAST_UPDATED = "2026-08-31";
 

@@ -34,10 +34,9 @@ export default function KvkkNoticePage() {
       >
         <EditorialSection title="1. Veri sorumlusu">
           <p>
-            Kişisel verileriniz, veri sorumlusu sıfatıyla
-            {" "}<strong>{DATA_CONTROLLER.name}</strong> ({DATA_CONTROLLER.role})
-            {" "}tarafından işlenir. Veri sorumlusunun adresi
-            {" "}<strong>{DATA_CONTROLLER.address}</strong>’dir.
+            Kişisel verileriniz, veri sorumlusu
+            {" "}<strong>{DATA_CONTROLLER.name}</strong> tarafından işlenir. Size
+            ulaşmak için kullanılır.
           </p>
           <p>
             Sorularınız ve KVKK kapsamındaki başvurularınız için
