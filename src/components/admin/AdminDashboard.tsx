@@ -59,6 +59,9 @@ export function AdminDashboard({ leads }: { leads: Lead[] }) {
             <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">İletişim talepleri</h1>
           </div>
           <div className="flex items-center gap-2">
+            <Link href="/yonetim/nfc" className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/70 transition hover:bg-white/7 hover:text-white">
+              NFC Kartlar
+            </Link>
             <Link href="/api/admin/leads/export" className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/70 transition hover:bg-white/7 hover:text-white">
               CSV indir
             </Link>

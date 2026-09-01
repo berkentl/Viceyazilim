@@ -22,7 +22,7 @@ olmayan kişilerle paylaşılmamalıdır.
 ## İlk kurulum
 
 1. Ortam değişkenlerini yerel kabuğa veya `.env.local` dosyasına ekleyin.
-2. `npm run db:migrate` ile `db/migrations/001_lead_crm.sql` dosyasını uygulayın.
+2. `npm run db:migrate` ile `db/migrations` altındaki tüm migration dosyalarını uygulayın.
 3. `npm run build` çalıştırın.
 4. Canlıya alındıktan sonra gerçek olmayan bir test kaydı oluşturun; panelde
    göründüğünü doğrulayın ve kaydı `Arşiv` durumuna taşıyın.

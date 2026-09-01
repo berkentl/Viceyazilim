@@ -7,9 +7,10 @@ import { AmbientGlow } from "@/components/motion/AmbientGlow";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/yonetim");
+  const isOperationalPage =
+    pathname.startsWith("/yonetim") || pathname.startsWith("/kart");
 
-  if (isAdmin) return children;
+  if (isOperationalPage) return children;
 
   return (
     <>

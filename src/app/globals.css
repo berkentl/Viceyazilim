@@ -84,6 +84,27 @@ p {
   text-wrap: pretty;
 }
 
+.admin-nfc-input {
+  height: 2.75rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(255 255 255 / 9%);
+  background: #111419;
+  padding-inline: 0.75rem;
+  color: white;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 160ms ease;
+}
+
+.admin-nfc-input:focus {
+  border-color: rgb(255 255 255 / 22%);
+}
+
+.admin-nfc-input::placeholder {
+  color: rgb(255 255 255 / 24%);
+}
+
 @media (min-width: 768px) {
   [data-approach-scroll-story] {
     height: 100svh;
