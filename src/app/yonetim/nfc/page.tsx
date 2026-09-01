@@ -14,5 +14,10 @@ export const metadata: Metadata = {
 export default async function AdminNfcPage() {
   if (!(await hasAdminSession())) redirect("/yonetim/giris");
   const cards = await listNfcCards();
-  return <AdminNfcDashboard cards={cards} />;
+  return (
+    <AdminNfcDashboard
+      cards={cards}
+      googlePlacesConfigured={Boolean(process.env.GOOGLE_PLACES_API_KEY)}
+    />
+  );
 }

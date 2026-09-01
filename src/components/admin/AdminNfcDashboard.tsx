@@ -8,6 +8,8 @@ import {
   type NfcCard,
   type NfcCardStatus,
 } from "@/lib/nfc";
+import type { GoogleBusinessSearchResult } from "@/lib/google-places";
+import { GoogleBusinessSearch } from "@/components/admin/GoogleBusinessSearch";
 
 const STATUS_LABELS: Record<NfcCardStatus, string> = {
   inventory: "Stokta",
@@ -34,7 +36,13 @@ function formatDate(value: string | null) {
   return value ? DATE_FORMATTER.format(new Date(value)) : "Henüz yok";
 }
 
-export function AdminNfcDashboard({ cards }: { cards: NfcCard[] }) {
+export function AdminNfcDashboard({
+  cards,
+  googlePlacesConfigured,
+}: {
+  cards: NfcCard[];
+  googlePlacesConfigured: boolean;
+}) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<NfcCardStatus | "all">("all");
@@ -166,7 +174,13 @@ export function AdminNfcDashboard({ cards }: { cards: NfcCard[] }) {
 
           <div className="mt-4 space-y-2">
             {filtered.length ? (
-              filtered.map((card) => <NfcCardEditor key={card.id} card={card} />)
+              filtered.map((card) => (
+                <NfcCardEditor
+                  key={card.id}
+                  card={card}
+                  googlePlacesConfigured={googlePlacesConfigured}
+                />
+              ))
             ) : (
               <div className="grid min-h-48 place-items-center rounded-2xl border border-dashed border-white/10 text-sm text-white/35">
                 Eşleşen kart bulunamadı.
@@ -190,7 +204,13 @@ function Metric({ label, value, accent }: { label: string; value: number; accent
   );
 }
 
-function NfcCardEditor({ card }: { card: NfcCard }) {
+function NfcCardEditor({
+  card,
+  googlePlacesConfigured,
+}: {
+  card: NfcCard;
+  googlePlacesConfigured: boolean;
+}) {
   const router = useRouter();
   const [businessName, setBusinessName] = useState(card.business_name ?? "");
   const [googleReviewUrl, setGoogleReviewUrl] = useState(card.google_review_url ?? "");
@@ -206,6 +226,12 @@ function NfcCardEditor({ card }: { card: NfcCard }) {
   function changed() {
     setSaveState("idle");
     setMessage("");
+  }
+
+  function selectGoogleBusiness(result: GoogleBusinessSearchResult) {
+    setBusinessName(result.name);
+    setGoogleReviewUrl(result.reviewUrl);
+    changed();
   }
 
   async function copyNfcUrl() {
@@ -288,6 +314,12 @@ function NfcCardEditor({ card }: { card: NfcCard }) {
                 Bu adres değişmez. İşletmenin Google bağlantısını aşağıdan istediğiniz zaman güncelleyebilirsiniz.
               </p>
             </div>
+
+            <GoogleBusinessSearch
+              initialQuery={businessName}
+              onSelect={selectGoogleBusiness}
+              configured={googlePlacesConfigured}
+            />
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="İşletme adı">
