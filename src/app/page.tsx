@@ -39,7 +39,7 @@ export default function Home() {
         })}
       />
       <Hero />
-      <section className="px-6 py-24 md:px-12 md:py-28">
+      <section className="home-defer home-defer-copy px-6 py-24 md:px-12 md:py-28">
         <ScrollRevealText text="Bir web sitesi sadece bir vitrin değildir; markanızın dijitaldeki sesi, güveni ve büyüme motorudur." />
       </section>
       <ServicesStrip />

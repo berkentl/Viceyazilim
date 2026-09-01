@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
+import { useFinePointer } from "@/lib/useFinePointer";
 import type { ReactNode } from "react";
 
 const GLOW_TINTS = {
@@ -38,7 +39,25 @@ export function MotionCard({
   reveal?: boolean;
 }) {
   const shouldReduceMotion = useSafeReducedMotion();
+  const finePointer = useFinePointer();
   const skipReveal = shouldReduceMotion || !reveal;
+
+  if (shouldReduceMotion || !finePointer) {
+    return (
+      <div className="group relative h-full">
+        {glow ? (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-35"
+            style={{
+              background: `radial-gradient(closest-side, ${GLOW_TINTS[tint]}, transparent 72%)`,
+            }}
+          />
+        ) : null}
+        <div className={`relative h-full ${className}`}>{children}</div>
+      </div>
+    );
+  }
 
   return (
     <motion.div

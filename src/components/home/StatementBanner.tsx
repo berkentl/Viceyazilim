@@ -9,14 +9,14 @@ import Image from "next/image";
  */
 export function StatementBanner() {
   return (
-    <section className="px-6 py-8 md:px-12">
+    <section className="home-defer home-defer-statement px-6 py-8 md:px-12">
       <div
         className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] px-8 py-20 text-center md:py-28"
         style={{ background: "oklch(0.2 0.045 255)" }}
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-70 blur-3xl"
+          className="home-soft-glow pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-70 blur-3xl"
           style={{
             background:
               "radial-gradient(closest-side, oklch(0.55 0.11 78 / 55%), transparent 72%)",
@@ -24,7 +24,7 @@ export function StatementBanner() {
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-32 -left-16 h-[22rem] w-[22rem] rounded-full opacity-60 blur-3xl"
+          className="home-soft-glow pointer-events-none absolute -bottom-32 -left-16 h-[22rem] w-[22rem] rounded-full opacity-60 blur-3xl"
           style={{
             background:
               "radial-gradient(closest-side, oklch(0.45 0.08 255 / 60%), transparent 72%)",

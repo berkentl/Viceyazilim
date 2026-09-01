@@ -18,7 +18,7 @@ const PRINCIPLES = [
  */
 export function TrustBanner() {
   return (
-    <section className="px-6 pb-28 pt-16 md:px-12 md:pb-36 md:pt-20">
+    <section className="home-defer home-defer-trust px-6 pb-28 pt-16 md:px-12 md:pb-36 md:pt-20">
       <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[#edf2f5] text-[#101820] md:rounded-[2.75rem]">
         <div
           aria-hidden="true"
