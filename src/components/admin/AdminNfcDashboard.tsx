@@ -115,7 +115,7 @@ export function AdminNfcDashboard({
               href="/api/admin/nfc/export"
               className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/70 transition hover:bg-white/7 hover:text-white"
             >
-              Envanteri indir
+              NFC tam yedeğini indir (CSV)
             </Link>
             <button
               type="button"
@@ -140,6 +140,12 @@ export function AdminNfcDashboard({
             Yeni kart oluşturulamadı. Lütfen yeniden deneyin.
           </p>
         )}
+
+        <p className="mt-4 rounded-xl border border-[#73df9d]/15 bg-[#73df9d]/[0.045] px-4 py-3 text-xs leading-5 text-white/58">
+          NFC kartları veritabanından silinemez. İşletme ve yönlendirme değişikliklerinin
+          önceki hâlleri otomatik olarak saklanır; CSV yedeği tüm kart, işletme, bağlantı
+          ve iletişim bilgilerini bilgisayarınıza indirir.
+        </p>
 
         <section className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Özet">
           <Metric label="Stoktaki kart" value={inventoryCount} accent="text-white" />

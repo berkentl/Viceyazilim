@@ -63,7 +63,7 @@ export function AdminDashboard({ leads }: { leads: Lead[] }) {
               NFC Kartlar
             </Link>
             <Link href="/api/admin/leads/export" className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/70 transition hover:bg-white/7 hover:text-white">
-              CSV indir
+              Talepleri indir (CSV)
             </Link>
             <button onClick={logout} className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/70 transition hover:bg-white/7 hover:text-white">
               Çıkış
