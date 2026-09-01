@@ -3,7 +3,7 @@ import { IntegralMark } from "@/components/IntegralMark";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[92dvh] flex-col overflow-hidden">
+    <section className="home-hero relative flex min-h-[92dvh] flex-col overflow-hidden">
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col items-center gap-14 px-6 pb-16 pt-36 md:flex-row md:items-center md:justify-between md:gap-12 md:px-12 md:pt-40">
         <div className="flex max-w-xl flex-col items-center text-center md:items-start md:text-left">
           <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-fg">

@@ -2,10 +2,10 @@ import Link from "next/link";
 
 export function ReferencesCTA() {
   return (
-    <section className="relative overflow-hidden px-6 py-20 md:px-12 md:py-28">
+    <section className="home-defer home-defer-cta relative overflow-hidden px-6 py-20 md:px-12 md:py-28">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-[34rem] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(58,114,181,0.2)_0%,rgba(34,56,112,0.1)_42%,transparent_72%)] blur-2xl"
+        className="home-soft-glow pointer-events-none absolute left-1/2 top-1/2 h-72 w-[34rem] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(58,114,181,0.2)_0%,rgba(34,56,112,0.1)_42%,transparent_72%)] blur-2xl"
       />
 
       <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">

@@ -52,9 +52,13 @@
 
 html {
   color-scheme: dark;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
+  max-width: 100%;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-apple-text);
@@ -62,6 +66,13 @@ body {
   font-kerning: normal;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
 }
 
 ::selection {
@@ -148,9 +159,94 @@ p {
     display: none;
   }
 
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(circle at 92% 7%, rgb(52 91 139 / 0.16), transparent 24rem),
+      radial-gradient(circle at 4% 42%, rgb(96 74 42 / 0.09), transparent 22rem),
+      radial-gradient(circle at 82% 78%, rgb(48 77 122 / 0.12), transparent 26rem);
+    background-position: top center, center 42%, center 78%;
+    background-repeat: no-repeat;
+    background-size: 100% 34rem, 100% 54rem, 100% 68rem;
+  }
+
+  .home-hero::before {
+    position: absolute;
+    inset: 15% -35% auto;
+    height: 32rem;
+    background:
+      radial-gradient(circle at 50% 45%, rgb(76 126 184 / 0.16), transparent 42%),
+      radial-gradient(circle at 32% 68%, rgb(154 122 74 / 0.08), transparent 38%);
+    content: "";
+    pointer-events: none;
+  }
+
+  .home-soft-glow {
+    filter: none !important;
+  }
+
+  .hero-mark-mobile {
+    animation: hero-mark-breathe 9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    transform-origin: 50% 52%;
+  }
+
+  .brand-metal-base {
+    filter: brightness(0.4) saturate(0.92) !important;
+  }
+
+  .brand-metal-highlight {
+    filter: brightness(1.04) contrast(1.02) !important;
+  }
+
+  .home-defer {
+    content-visibility: auto;
+  }
+
+  .home-defer-copy {
+    contain-intrinsic-size: auto 99px;
+  }
+
+  .home-defer-services {
+    contain-intrinsic-size: auto 865px;
+  }
+
+  .home-defer-references {
+    contain-intrinsic-size: auto 2596px;
+  }
+
+  .home-defer-cta {
+    contain-intrinsic-size: auto 221px;
+  }
+
+  .home-defer-statement {
+    contain-intrinsic-size: auto 257px;
+  }
+
+  .home-defer-trust {
+    contain-intrinsic-size: auto 1045px;
+  }
+
+  .home-defer-agency {
+    contain-intrinsic-size: auto 2694px;
+  }
+
+  .home-defer-continuity {
+    contain-intrinsic-size: auto 1623px;
+  }
+
   .mobile-menu-overlay {
     background: var(--bg);
     backdrop-filter: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  @supports (animation-timeline: view()) {
+    .mobile-copy-reveal {
+      animation: mobile-copy-enter linear both;
+      animation-range: entry 8% cover 34%;
+      animation-timeline: view();
+    }
   }
 }
 
@@ -202,6 +298,31 @@ p {
 @keyframes mobile-offer-laser {
   to {
     transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+@keyframes hero-mark-breathe {
+  0%,
+  100% {
+    opacity: 0.84;
+    transform: rotate(-2.5deg) scale(0.985);
+  }
+
+  50% {
+    opacity: 1;
+    transform: rotate(2.5deg) scale(1.015);
+  }
+}
+
+@keyframes mobile-copy-enter {
+  from {
+    opacity: 0.38;
+    transform: translateY(1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

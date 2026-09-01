@@ -37,7 +37,7 @@ export function MetalFill({ maskSrc }: { maskSrc: string }) {
     <>
       <div
         aria-hidden="true"
-        className="absolute inset-0"
+        className="brand-metal-base absolute inset-0"
         style={{
           ...MASK_STYLE,
           ...maskImage,
@@ -47,7 +47,7 @@ export function MetalFill({ maskSrc }: { maskSrc: string }) {
       />
       <motion.div
         aria-hidden="true"
-        className="absolute inset-0"
+        className="brand-metal-highlight absolute inset-0"
         style={{
           ...MASK_STYLE,
           ...maskImage,

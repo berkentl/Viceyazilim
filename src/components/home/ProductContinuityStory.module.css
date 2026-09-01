@@ -89,6 +89,20 @@
   isolation: isolate;
 }
 
+.staticStage {
+  position: relative;
+  height: 100svh;
+}
+
+.staticStage .videoMask {
+  background:
+    radial-gradient(circle at 50% 48%, rgb(38 87 126 / 0.2), transparent 34%),
+    linear-gradient(155deg, #0b1926 0%, #07111a 62%, #050b12 100%);
+  clip-path: none;
+  transform: none;
+  will-change: auto;
+}
+
 .stickyStage::before {
   position: absolute;
   z-index: -2;
@@ -572,7 +586,18 @@
 
 @media (hover: none), (pointer: coarse) {
   .scrollStory {
-    height: 100svh;
+    height: auto;
+  }
+
+  .staticStage {
+    height: max(44rem, 100svh);
+    min-height: 44rem;
+  }
+
+  .stickyStage::before {
+    opacity: 0.55;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .video {
@@ -580,6 +605,8 @@
   }
 
   .videoMask {
+    clip-path: none !important;
+    transform: none !important;
     will-change: auto;
   }
 
@@ -594,6 +621,14 @@
 
   .orbit {
     animation: none;
+  }
+
+  .ticket {
+    transform: none;
+  }
+
+  .ticketTexture::after {
+    display: none;
   }
 }
 

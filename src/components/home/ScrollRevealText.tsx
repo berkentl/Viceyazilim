@@ -11,9 +11,22 @@ import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { useFinePointer } from "@/lib/useFinePointer";
 
 export function ScrollRevealText({ text }: { text: string }) {
-  const containerRef = useRef<HTMLParagraphElement>(null);
   const shouldReduceMotion = useSafeReducedMotion();
   const finePointer = useFinePointer();
+
+  if (shouldReduceMotion || !finePointer) {
+    return (
+      <p className="mobile-copy-reveal mx-auto max-w-4xl text-center text-[clamp(1.5rem,4vw,2.75rem)] font-medium leading-snug tracking-tight text-fg">
+        {text}
+      </p>
+    );
+  }
+
+  return <AnimatedScrollRevealText text={text} />;
+}
+
+function AnimatedScrollRevealText({ text }: { text: string }) {
+  const containerRef = useRef<HTMLParagraphElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 0.85", "start 0.2"],
@@ -32,7 +45,6 @@ export function ScrollRevealText({ text }: { text: string }) {
           word={word}
           progress={scrollYProgress}
           range={[index / words.length, (index + 1) / words.length]}
-          staticOpacity={Boolean(shouldReduceMotion || !finePointer)}
         />
       ))}
     </p>
@@ -43,18 +55,16 @@ function Word({
   word,
   progress,
   range,
-  staticOpacity,
 }: {
   word: string;
   progress: MotionValue<number>;
   range: [number, number];
-  staticOpacity: boolean;
 }) {
   const opacity = useTransform(progress, range, [0.15, 1]);
 
   return (
     <motion.span
-      style={{ opacity: staticOpacity ? 1 : opacity }}
+      style={{ opacity }}
       className="mr-[0.28em] inline-block"
     >
       {word}

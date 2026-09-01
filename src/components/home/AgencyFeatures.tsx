@@ -45,7 +45,7 @@ export function AgencyFeatures() {
   const finePointer = useFinePointer();
 
   return (
-    <section className="px-6 pb-28 md:px-12 md:pb-40">
+    <section className="home-defer home-defer-agency px-6 pb-28 md:px-12 md:pb-40">
       <div className="mx-auto max-w-6xl">
         <header className="grid gap-6 pb-12 md:grid-cols-[minmax(0,1fr)_minmax(18rem,0.48fr)] md:items-end md:gap-12 md:pb-16">
           <div>

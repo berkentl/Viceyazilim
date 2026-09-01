@@ -87,7 +87,7 @@ export function ServicesStrip() {
   );
 
   return (
-    <section className="relative border-y border-hairline py-20 md:py-24">
+    <section className="home-defer home-defer-services relative border-y border-hairline py-20 md:py-24">
       <FloatingCodeLayer />
 
       <div
