@@ -116,7 +116,7 @@ export function AdminNfcDashboard({
               download
               className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/70 transition hover:bg-white/7 hover:text-white"
             >
-              NFC tam yedeğini indir (CSV)
+              NFC tam yedeğini indir (Excel)
             </a>
             <button
               type="button"
@@ -144,8 +144,8 @@ export function AdminNfcDashboard({
 
         <p className="mt-4 rounded-xl border border-[#73df9d]/15 bg-[#73df9d]/[0.045] px-4 py-3 text-xs leading-5 text-white/58">
           NFC kartları veritabanından silinemez. İşletme ve yönlendirme değişikliklerinin
-          önceki hâlleri otomatik olarak saklanır; CSV yedeği tüm kart, işletme, bağlantı
-          ve iletişim bilgilerini bilgisayarınıza indirir.
+          önceki hâlleri otomatik olarak saklanır; düzenlenmiş Excel yedeği tüm kart,
+          işletme, bağlantı ve iletişim bilgilerini bilgisayarınıza indirir.
         </p>
 
         <section className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Özet">

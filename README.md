@@ -50,8 +50,9 @@ kullanılır; `NEXT_PUBLIC_` öneki eklemeyin.
 
 ### NFC veri koruması
 
-- NFC yönetim panelindeki tam CSV yedeği kart kimliklerini, sabit NFC adreslerini,
-  işletme ve iletişim bilgilerini, Google yorum bağlantılarını ve okutma özetlerini içerir.
+- NFC yönetim panelindeki düzenlenmiş Excel yedeği kart kimliklerini, sabit NFC
+  adreslerini, işletme ve iletişim bilgilerini, Google yorum bağlantılarını ve
+  okutma özetlerini içerir.
 - `nfc_card_history` tablosu her yapılandırma değişikliğinden önceki değerleri saklar.
 - Veritabanı tetikleyicisi NFC kartlarının silinmesini engeller; kartlar yalnızca
   `retired` durumuna alınabilir.
