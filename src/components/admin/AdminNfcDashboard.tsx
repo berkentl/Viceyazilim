@@ -111,12 +111,13 @@ export function AdminNfcDashboard({
             >
               Talepler
             </Link>
-            <Link
+            <a
               href="/api/admin/nfc/export"
+              download
               className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/70 transition hover:bg-white/7 hover:text-white"
             >
               NFC tam yedeğini indir (CSV)
-            </Link>
+            </a>
             <button
               type="button"
               onClick={createCard}
