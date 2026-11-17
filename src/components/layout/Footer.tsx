@@ -11,6 +11,7 @@ const COLUMNS = [
       { label: "Web Yazılım", href: "/hizmetler/web-yazilim" },
       { label: "SEO", href: "/hizmetler/seo" },
       { label: "Google Ads", href: "/hizmetler/google-ads" },
+      { label: "Sosyal Medya", href: "/hizmetler/sosyal-medya-yonetimi" },
     ],
   },
   {

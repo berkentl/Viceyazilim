@@ -35,6 +35,7 @@ export const INDEXABLE_ROUTES = [
   "/hizmetler/e-ticaret",
   "/hizmetler/seo",
   "/hizmetler/google-ads",
+  "/hizmetler/sosyal-medya-yonetimi",
   "/referanslar",
   "/kurumsal/hakkimizda",
   "/iletisim",

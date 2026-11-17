@@ -24,6 +24,7 @@ export const NAV_ITEMS: NavItem[] = [
         links: [
           { label: "SEO", href: "/hizmetler/seo" },
           { label: "Google Ads Reklamları", href: "/hizmetler/google-ads" },
+          { label: "Sosyal Medya Yönetimi", href: "/hizmetler/sosyal-medya-yonetimi" },
         ],
       },
     ],

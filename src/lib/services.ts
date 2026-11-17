@@ -314,4 +314,55 @@ export const SERVICES = {
       },
     ],
   },
+  socialMedia: {
+    path: "/hizmetler/sosyal-medya-yonetimi",
+    title: "Sosyal Medya Yönetimi",
+    heading: "Sosyal medya yönetimi, markanın her gün aynı güvenle görünmesini sağlar.",
+    description:
+      "Post ve story tasarımı, reels ve video üretimi, Meta reklamları ve aylık raporlamayı tek elden, kuruma özel bir içerik planıyla yönetiyoruz.",
+    serviceType: "Sosyal medya yönetimi ve içerik üretimi",
+    keywords: [
+      "sosyal medya yönetimi",
+      "sosyal medya ajansı",
+      "Instagram yönetimi",
+      "reels video üretimi",
+      "Meta reklam yönetimi",
+    ],
+    answer:
+      "Etkili sosyal medya yönetimi rastgele paylaşım yapmak değil; kurumun kim olduğunu her gönderide aynı görsel dil ve aynı tonla anlatmaktır. Vice Yazılım; aylık içerik takvimini, post ve story tasarımlarını, reels videolarını, Meta reklamlarını ve raporlamayı tek bir planda yönetir. İçerik adetleri ve revizyon hakları baştan yazılı olarak netleşir.",
+    capabilities: [
+      {
+        title: "İçerik tasarımı",
+        description:
+          "Kuruma özel şablonlarla hazırlanan, akışta tutarlı görünen post ve story tasarımları.",
+      },
+      {
+        title: "Video ve reels",
+        description:
+          "Tanıtım, eğitim ve quiz formatında; dikkat çeken ve markayı anlatan kısa videolar.",
+      },
+      {
+        title: "Meta reklamları",
+        description:
+          "Reklam kurulumu, yönetimi, kreatifleri ve A/B testleriyle doğru kitleye ulaşan kampanyalar.",
+      },
+    ],
+    questions: [
+      {
+        question: "İçerik takvimi nasıl hazırlanıyor?",
+        answer:
+          "Her ay paylaşımlar başlamadan önce içerik takvimi hazırlanır ve onayınıza sunulur. Üretim ve paylaşım onaylanan plana göre yapılır.",
+      },
+      {
+        question: "Reklam bütçesi hizmet bedeline dahil mi?",
+        answer:
+          "Hayır. Meta'ya ödenen reklam bütçesi hizmet bedelinden ayrıdır ve doğrudan kurumun kendi reklam hesabından ödenir.",
+      },
+      {
+        question: "İçerik adetleri ve revizyonlar nasıl belirleniyor?",
+        answer:
+          "Kurumun ihtiyacına göre belirlenir. İçerik adetleri ve revizyon hakları çalışmaya başlamadan önce sözleşmede yazılı olarak netleşir.",
+      },
+    ],
+  },
 } satisfies Record<string, ServiceContent>;
