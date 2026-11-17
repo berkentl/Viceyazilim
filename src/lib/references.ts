@@ -62,6 +62,12 @@ export type Reference = {
   mobile: MobileTreatment;
   /** Describes the artwork itself, for readers who cannot see it. */
   imageAlt: string;
+  /**
+   * The artwork already has the logo and copy painted in (only supported with
+   * `mobile.kind: "artwork"`). The live copy is then kept for screen readers
+   * and search engines only, so the words are not drawn twice.
+   */
+  textInArtwork?: boolean;
 };
 
 /** Apple-style brushed silver, used behind cut-out devices. */
@@ -150,6 +156,31 @@ export const REFERENCES: Reference[] = [
     },
     imageAlt:
       "Kırık beyaz zeminde podyum üzerinde Bali Sapanca Bungalov web sitesinin telefon ve dizüstü bilgisayardaki görünümü.",
+  },
+  {
+    slug: "ozel-bodrum-denizcilik",
+    client: "Özel Bodrum Denizcilik",
+    headline: "Güven veren bir denizcilik deneyimi.",
+    body: "Denizcilik eğitimi veren bir kurum için sade, tutarlı ve dikkat çeken bir sosyal medya kimliği.",
+    discipline: "Sosyal Medya Yönetimi / İçerik Tasarımı / Reels",
+    stack: "Instagram · Canva · Remotion",
+    liveUrl: "https://www.instagram.com/ozelbodrumdenizcilik/",
+    wide: {
+      src: "/referanslar/ozel-bodrum-denizcilik-wide.webp",
+      width: 2000,
+      height: 758,
+      tone: "light",
+    },
+    mobile: {
+      kind: "artwork",
+      src: "/referanslar/ozel-bodrum-denizcilik-portrait.webp",
+      width: 1438,
+      height: 1798,
+      tone: "light",
+    },
+    textInArtwork: true,
+    imageAlt:
+      "Turkuaz denizde ilerleyen beyaz bir yat ve yanında Özel Bodrum Denizcilik Instagram profilini gösteren telefon.",
   },
 ];
 

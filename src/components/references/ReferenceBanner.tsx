@@ -135,17 +135,25 @@ function ArtworkCard({ reference, preload }: { reference: Reference; preload: bo
         />
       </picture>
 
-      <Logo
-        tone={wide.tone}
-        mobileTone={mobile.tone}
-        sizes="(min-width: 1024px) 86px, (min-width: 768px) 74px, 54px"
-      />
-      <Copy
-        reference={reference}
-        tone={mobile.tone}
-        desktopTone={wide.tone}
-        className="absolute inset-x-0 top-0 px-6 pt-[4.75rem] md:inset-y-0 md:right-auto md:w-[46%] md:justify-center md:px-12 md:pt-0 lg:px-16"
-      />
+      {reference.textInArtwork ? (
+        // The artwork already shows logo and copy; keep the words for screen
+        // readers and search engines without painting them twice.
+        <Copy reference={reference} tone={mobile.tone} className="sr-only" />
+      ) : (
+        <>
+          <Logo
+            tone={wide.tone}
+            mobileTone={mobile.tone}
+            sizes="(min-width: 1024px) 86px, (min-width: 768px) 74px, 54px"
+          />
+          <Copy
+            reference={reference}
+            tone={mobile.tone}
+            desktopTone={wide.tone}
+            className="absolute inset-x-0 top-0 px-6 pt-[4.75rem] md:inset-y-0 md:right-auto md:w-[46%] md:justify-center md:px-12 md:pt-0 lg:px-16"
+          />
+        </>
+      )}
     </div>
   );
 }
