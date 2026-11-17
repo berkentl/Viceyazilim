@@ -4,9 +4,7 @@ import {
   ImageSquare,
   Megaphone,
 } from "@phosphor-icons/react/dist/ssr";
-import { ReferenceBanner } from "@/components/references/ReferenceBanner";
 import { ServiceCTA } from "@/components/services/ServiceCTA";
-import { getReference } from "@/lib/references";
 import { SocialMediaHero } from "./SocialMediaHero";
 import styles from "./SocialMediaExperience.module.css";
 
@@ -69,8 +67,6 @@ const TOOLS = [
 ] as const;
 
 export function SocialMediaExperience() {
-  const caseStudy = getReference("ozel-bodrum-denizcilik");
-
   return (
     <div className={styles.page}>
       <SocialMediaHero />
@@ -107,16 +103,6 @@ export function SocialMediaExperience() {
           ))}
         </div>
       </section>
-
-      {caseStudy ? (
-        <section className={styles.caseStudy} aria-labelledby="social-case-title">
-          <div className={styles.caseHeading}>
-            <span className={styles.eyebrow}>Gerçek iş</span>
-            <h2 id="social-case-title">Bir kurum, tek görsel dil.</h2>
-          </div>
-          <ReferenceBanner reference={caseStudy} />
-        </section>
-      ) : null}
 
       <section className={styles.operatingSystem} aria-labelledby="social-process-title">
         <div className={styles.systemHeading}>

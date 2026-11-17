@@ -185,10 +185,115 @@
   left: 0;
 }
 
-.phoneFeed img {
+.igTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--phone-w) * 0.03) calc(var(--phone-w) * 0.05);
+  color: #fff;
+  font-size: calc(var(--phone-w) * 0.046);
+}
+
+.igTop b {
+  flex: 1;
+  margin-left: calc(var(--phone-w) * 0.03);
+  font-weight: 650;
+}
+
+.igProfile {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--phone-w) * 0.045);
+  padding: calc(var(--phone-w) * 0.035) calc(var(--phone-w) * 0.05);
+  color: #fff;
+}
+
+.igAvatar {
+  display: grid;
+  flex: none;
+  width: calc(var(--phone-w) * 0.2);
+  height: calc(var(--phone-w) * 0.2);
+  place-items: center;
+  border-radius: 50%;
+  background: #1d3557;
+  /* Story ring: a dark gap, then the accent. */
+  box-shadow: 0 0 0 2px #0b0b0f, 0 0 0 3.5px var(--sm-accent-2);
+}
+
+.igAvatar img {
+  width: 58%;
+  height: 58%;
+}
+
+.igProfile div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: calc(var(--phone-w) * 0.008);
+  font-size: calc(var(--phone-w) * 0.038);
+  line-height: 1.25;
+}
+
+.igProfile b {
+  font-size: calc(var(--phone-w) * 0.046);
+  font-weight: 650;
+}
+
+.igProfile span {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.igProfile .igLink {
+  color: #a8c7ff;
+}
+
+.igButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--phone-w) * 0.02);
+  padding: calc(var(--phone-w) * 0.02) calc(var(--phone-w) * 0.05) calc(var(--phone-w) * 0.04);
+}
+
+.igButtons span {
+  display: grid;
+  height: calc(var(--phone-w) * 0.085);
+  place-items: center;
+  border-radius: calc(var(--phone-w) * 0.022);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: calc(var(--phone-w) * 0.036);
+  font-weight: 600;
+}
+
+.igButtons span:first-child {
+  background: #4a5df9;
+}
+
+.igTabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  padding-bottom: calc(var(--phone-w) * 0.025);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.igTabs svg:first-child {
+  color: #fff;
+}
+
+.igGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+}
+
+.igGrid img {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
 }
 
 .phoneIsland {
@@ -633,7 +738,6 @@
 
 .manifesto,
 .surfaces,
-.caseStudy,
 .operatingSystem,
 .clarity,
 .stack,
@@ -710,7 +814,6 @@
 
 .surfacesHeading h2,
 .systemHeading h2,
-.caseHeading h2,
 .clarity h2,
 .stack h2 {
   margin: 0;
@@ -781,21 +884,6 @@
 .surfaceList article:hover > svg {
   color: var(--sm-accent-2);
   transform: translateY(-4px) rotate(-3deg);
-}
-
-.caseStudy {
-  padding: 4rem 6vw 12rem;
-  background: var(--sm-bg);
-}
-
-.caseHeading {
-  max-width: 84rem;
-  margin: 0 auto 3.5rem;
-}
-
-.caseStudy > a {
-  max-width: 1400px;
-  margin-inline: auto;
 }
 
 .operatingSystem {
@@ -1017,7 +1105,6 @@
 
   .surfacesHeading h2,
   .systemHeading h2,
-  .caseHeading h2,
   .clarity h2,
   .stack h2 {
     font-size: clamp(2.7rem, 12vw, 4.6rem);
@@ -1054,14 +1141,6 @@
   .systemList p {
     grid-column: 1 / -1;
     margin-top: 0.2rem;
-  }
-
-  .caseStudy {
-    padding: 2rem 1rem 8rem;
-  }
-
-  .caseHeading {
-    margin-bottom: 2.5rem;
   }
 
   .clarity {

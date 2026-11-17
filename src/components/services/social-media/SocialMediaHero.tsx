@@ -1,16 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import { ChartBar, ChatCircle, Heart, Play } from "@phosphor-icons/react";
+import {
+  CaretLeft,
+  ChartBar,
+  ChatCircle,
+  DotsThree,
+  FilmReel,
+  Heart,
+  Play,
+  SquaresFour,
+  UserSquare,
+} from "@phosphor-icons/react";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import styles from "./SocialMediaExperience.module.css";
 
+/** Our own Instagram posts, already served from the site's gallery. */
+const FEED_POSTS = [
+  "/vice-gallery/dijital-guc.png",
+  "/vice-gallery/mobil-deneyim.png",
+  "/vice-gallery/marka-guveni.png",
+  "/vice-gallery/ekip.png",
+  "/vice-gallery/hizmet-sistemi.png",
+  "/vice-gallery/ui-ux.png",
+] as const;
+
 /**
- * The phone shows a real Instagram profile we manage (cropped from the Özel
- * Bodrum Denizcilik reference artwork). While scrolling, the intro steps
- * aside, the feed inside the phone scrolls, and the four things we produce —
- * post, story, reels, report — open out of the phone.
+ * The phone shows Vice Yazılım's own Instagram profile, drawn in code with our
+ * real posts in the grid (no follower counts, nothing that goes stale). While
+ * scrolling, the intro steps aside, the feed inside the phone scrolls, and the
+ * four things we produce — post, story, reels, report — open out of the phone.
  *
  * Every card is decorative; the words that matter are the H1 and the resolve
  * line, both rendered as live text in the server HTML.
@@ -126,14 +146,50 @@ export function SocialMediaHero() {
             </div>
             <div className={styles.phoneScreen}>
               <div data-sm-feed className={styles.phoneFeed}>
-                <Image
-                  src="/sosyal-medya/instagram-profile.jpg"
-                  alt=""
-                  width={318}
-                  height={752}
-                  priority
-                  sizes="(max-width: 800px) 46vw, 20rem"
-                />
+                <div className={styles.igTop}>
+                  <CaretLeft size={12} weight="bold" />
+                  <b>viceyazilim</b>
+                  <DotsThree size={14} weight="bold" />
+                </div>
+                <div className={styles.igProfile}>
+                  <span className={styles.igAvatar}>
+                    <Image
+                      src="/brand/mark-white.png"
+                      alt=""
+                      width={2048}
+                      height={2048}
+                      sizes="3rem"
+                    />
+                  </span>
+                  <div>
+                    <b>Vice Yazılım</b>
+                    <span>Kurumsal Web Tasarım Ajansı</span>
+                    <span className={styles.igLink}>viceyazilim.com</span>
+                  </div>
+                </div>
+                <div className={styles.igButtons}>
+                  <span>Takip et</span>
+                  <span>Mesaj</span>
+                </div>
+                <div className={styles.igTabs}>
+                  <SquaresFour size={13} weight="fill" />
+                  <FilmReel size={13} />
+                  <UserSquare size={13} />
+                </div>
+                <div className={styles.igGrid}>
+                  {/* Two passes of the six posts fill the screen with room to scroll. */}
+                  {[...FEED_POSTS, ...FEED_POSTS].map((src, index) => (
+                    <Image
+                      key={`${src}-${index}`}
+                      src={src}
+                      alt=""
+                      width={1080}
+                      height={1350}
+                      loading="eager"
+                      sizes="(max-width: 800px) 16vw, 7rem"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
