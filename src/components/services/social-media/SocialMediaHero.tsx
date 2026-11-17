@@ -91,11 +91,10 @@ export function SocialMediaHero() {
         };
       });
 
+      // Reduced motion is handled entirely in CSS: one static frame with the
+      // cards and the resolve line laid out so nothing is hidden or overlaps.
       media.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set([intro, rig, feed, halo], { clearProps: "all" });
-        gsap.set(cards, { autoAlpha: 1, clearProps: "transform" });
-        gsap.set(resolve, { autoAlpha: 0 });
-        gsap.set(progress, { scaleX: 1 });
+        gsap.set([intro, rig, feed, halo, resolve, ...cards], { clearProps: "all" });
       });
 
       return () => media.revert();
