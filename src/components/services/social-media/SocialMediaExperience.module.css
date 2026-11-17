@@ -1,0 +1,515 @@
+.page {
+  --sm-bg: #070a10;
+  --sm-panel: #0c111a;
+  --sm-text: rgba(250, 249, 255, 0.98);
+  --sm-muted: rgba(222, 216, 235, 0.54);
+  --sm-line: rgba(214, 196, 240, 0.12);
+  --sm-accent-1: #8a5cff;
+  --sm-accent-2: #ff4f8b;
+  --sm-accent-3: #ffa94d;
+  --sm-soft: #d9c6ff;
+  --sm-gradient: linear-gradient(135deg, var(--sm-accent-1), var(--sm-accent-2) 55%, var(--sm-accent-3));
+  background: var(--sm-bg);
+  color: var(--sm-text);
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  height: 220svh;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 74% 40%, rgba(138, 92, 255, 0.14), transparent 32%),
+    linear-gradient(180deg, #06080d, #080a11 68%, #070a10);
+}
+
+.heroStage {
+  --phone-w: min(19rem, 21vw, calc(76svh * 0.47));
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.heroStage::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(6, 8, 13, 0.8) 0%, rgba(6, 8, 13, 0.12) 52%, rgba(6, 8, 13, 0.04) 100%);
+  content: "";
+  pointer-events: none;
+}
+
+.heroGrid {
+  position: absolute;
+  z-index: -1;
+  inset: -10%;
+  background-image:
+    linear-gradient(rgba(206, 188, 238, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(206, 188, 238, 0.04) 1px, transparent 1px);
+  background-size: 5rem 5rem;
+  mask-image: radial-gradient(circle at 72% 48%, black, transparent 66%);
+  opacity: 0.5;
+}
+
+.heroHalo {
+  position: absolute;
+  z-index: -1;
+  top: 12%;
+  right: -6%;
+  width: 62vw;
+  height: 78vh;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 56% 42%, rgba(138, 92, 255, 0.26), transparent 26%),
+    radial-gradient(circle at 66% 60%, rgba(255, 79, 139, 0.14), transparent 22%),
+    radial-gradient(circle at 44% 66%, rgba(255, 169, 77, 0.1), transparent 20%);
+  filter: blur(56px);
+  opacity: 0.7;
+}
+
+.heroIntro,
+.heroResolve {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: clamp(1.5rem, 6vw, 7rem);
+  transform: translateY(-50%);
+}
+
+.heroIntro {
+  width: min(45rem, 46vw);
+}
+
+.heroIntro > p,
+.heroResolve span,
+.eyebrow {
+  margin: 0 0 1.5rem;
+  color: var(--sm-soft);
+  font-size: 0.72rem;
+  font-weight: 720;
+  letter-spacing: 0.24em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.heroIntro h1 {
+  max-width: 43rem;
+  margin: 0;
+  font-size: clamp(4rem, 7.2vw, 8.4rem);
+  font-weight: 590;
+  letter-spacing: -0.075em;
+  line-height: 0.88;
+  text-wrap: balance;
+}
+
+.heroIntro > span {
+  display: block;
+  max-width: 33rem;
+  margin-top: 2rem;
+  color: var(--sm-muted);
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  line-height: 1.65;
+  text-wrap: balance;
+}
+
+.heroResolve {
+  width: min(38rem, 40vw);
+}
+
+.heroResolve span,
+.heroResolve strong {
+  display: block;
+}
+
+.heroResolve strong {
+  font-size: clamp(3rem, 5.4vw, 6.2rem);
+  font-weight: 580;
+  letter-spacing: -0.07em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+/* The rig is positioned without a transform so GSAP owns it outright. */
+.rig {
+  position: absolute;
+  z-index: 2;
+  top: calc(50% - var(--phone-w) * 1.04);
+  right: clamp(4rem, 15vw, 16rem);
+  width: var(--phone-w);
+  height: calc(var(--phone-w) * 2.08);
+  transform-origin: 50% 50%;
+}
+
+.phone {
+  position: absolute;
+  inset: 0;
+  padding: calc(var(--phone-w) * 0.035);
+  border-radius: calc(var(--phone-w) * 0.16);
+  background: linear-gradient(150deg, #e9e9ee, #a7a8b0 38%, #e2e2e7 62%, #8e8f97);
+  box-shadow:
+    0 50px 90px -30px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 90px -20px rgba(138, 92, 255, 0.35);
+}
+
+.phoneScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: calc(var(--phone-w) * 0.13);
+  background: #0b0b0f;
+}
+
+.phoneFeed {
+  position: absolute;
+  top: calc(var(--phone-w) * 0.15);
+  right: 0;
+  left: 0;
+}
+
+.phoneFeed img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.phoneIsland {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--phone-w) * 0.065);
+  left: 50%;
+  width: 30%;
+  height: calc(var(--phone-w) * 0.085);
+  border-radius: 999px;
+  background: #000;
+  transform: translateX(-50%);
+}
+
+.phoneStatus {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--phone-w) * 0.07);
+  right: calc(var(--phone-w) * 0.12);
+  left: calc(var(--phone-w) * 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  font-size: calc(var(--phone-w) * 0.045);
+  font-weight: 600;
+}
+
+.phoneStatus i {
+  width: calc(var(--phone-w) * 0.075);
+  height: calc(var(--phone-w) * 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  background: linear-gradient(90deg, #fff 70%, transparent 70%);
+}
+
+.orbitCard {
+  position: absolute;
+  z-index: 3;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: calc(var(--phone-w) * 0.07);
+  background: rgba(17, 19, 28, 0.86);
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(14px);
+}
+
+.orbitCard em {
+  position: absolute;
+  bottom: calc(var(--phone-w) * 0.035);
+  left: calc(var(--phone-w) * 0.045);
+  color: #fff;
+  font-size: calc(var(--phone-w) * 0.05);
+  font-style: normal;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+}
+
+.cardPost {
+  top: 6%;
+  left: calc(var(--phone-w) * -0.78);
+  width: calc(var(--phone-w) * 0.62);
+  height: calc(var(--phone-w) * 0.8);
+  padding: calc(var(--phone-w) * 0.04);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--phone-w) * 0.025);
+}
+
+.cardHead i {
+  width: calc(var(--phone-w) * 0.06);
+  height: calc(var(--phone-w) * 0.06);
+  border-radius: 50%;
+  background: var(--sm-gradient);
+}
+
+.cardHead b {
+  width: 46%;
+  height: calc(var(--phone-w) * 0.018);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.cardMedia {
+  height: calc(var(--phone-w) * 0.42);
+  margin-top: calc(var(--phone-w) * 0.03);
+  border-radius: calc(var(--phone-w) * 0.035);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.35), transparent 30%),
+    var(--sm-gradient);
+}
+
+.cardActions {
+  display: flex;
+  gap: calc(var(--phone-w) * 0.03);
+  margin-top: calc(var(--phone-w) * 0.03);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.cardActions svg:first-child {
+  color: var(--sm-accent-2);
+}
+
+.cardStory {
+  top: 2%;
+  right: calc(var(--phone-w) * -0.6);
+  width: calc(var(--phone-w) * 0.44);
+  height: calc(var(--phone-w) * 0.78);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55)),
+    linear-gradient(160deg, var(--sm-accent-3), var(--sm-accent-2) 52%, var(--sm-accent-1));
+}
+
+.storyBars {
+  display: flex;
+  gap: 4px;
+  padding: calc(var(--phone-w) * 0.035);
+}
+
+.storyBars i {
+  flex: 1;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.storyBars i:first-child {
+  background: #fff;
+}
+
+.cardReels {
+  right: calc(var(--phone-w) * -0.66);
+  bottom: 12%;
+  width: calc(var(--phone-w) * 0.48);
+  height: calc(var(--phone-w) * 0.84);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(138, 92, 255, 0.55), transparent 55%),
+    linear-gradient(180deg, #171327, #0d0b16);
+}
+
+.reelsPlay {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  display: grid;
+  width: calc(var(--phone-w) * 0.16);
+  height: calc(var(--phone-w) * 0.16);
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  transform: translate(-50%, -50%);
+}
+
+.cardReport {
+  bottom: 8%;
+  left: calc(var(--phone-w) * -0.92);
+  width: calc(var(--phone-w) * 0.74);
+  height: calc(var(--phone-w) * 0.5);
+  padding: calc(var(--phone-w) * 0.045);
+}
+
+.reportHead {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--phone-w) * 0.025);
+  color: var(--sm-soft);
+}
+
+.reportHead em {
+  position: static;
+  font-size: calc(var(--phone-w) * 0.045);
+}
+
+.reportBars {
+  position: absolute;
+  right: calc(var(--phone-w) * 0.045);
+  bottom: calc(var(--phone-w) * 0.045);
+  left: calc(var(--phone-w) * 0.045);
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--phone-w) * 0.03);
+  height: 52%;
+}
+
+.reportBars i {
+  flex: 1;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, var(--sm-accent-2), var(--sm-accent-1));
+}
+
+.reportBars i:nth-child(1) { height: 34%; opacity: 0.55; }
+.reportBars i:nth-child(2) { height: 48%; opacity: 0.65; }
+.reportBars i:nth-child(3) { height: 42%; opacity: 0.75; }
+.reportBars i:nth-child(4) { height: 70%; opacity: 0.88; }
+.reportBars i:nth-child(5) { height: 92%; }
+
+.scrollCue {
+  position: absolute;
+  z-index: 4;
+  right: clamp(1.5rem, 5vw, 6rem);
+  bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(226, 218, 240, 0.42);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.scrollCue span {
+  display: block;
+  width: 2.8rem;
+  height: 1px;
+  background: rgba(226, 210, 245, 0.36);
+}
+
+.heroProgress {
+  position: absolute;
+  z-index: 5;
+  right: 5vw;
+  bottom: 1.75rem;
+  left: 5vw;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(226, 210, 245, 0.09);
+}
+
+.heroProgress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--sm-gradient);
+  box-shadow: 0 0 18px rgba(255, 79, 139, 0.5);
+}
+
+@media (max-width: 1050px) {
+  .heroIntro {
+    width: min(42rem, 52vw);
+  }
+
+  .rig {
+    right: clamp(3rem, 12vw, 8rem);
+  }
+}
+
+@media (max-width: 800px) {
+  .hero {
+    height: 175svh;
+  }
+
+  .heroStage {
+    --phone-w: min(44vw, 12.5rem, calc(40svh * 0.48));
+  }
+
+  .heroStage::after {
+    background: linear-gradient(180deg, rgba(6, 8, 13, 0.35), rgba(6, 8, 13, 0.08) 52%, rgba(6, 8, 13, 0.6));
+  }
+
+  .heroGrid {
+    background-size: 3.25rem 3.25rem;
+    mask-image: radial-gradient(circle at 50% 66%, black, transparent 78%);
+  }
+
+  .heroHalo {
+    top: 40%;
+    right: -40%;
+    width: 140vw;
+    height: 55vh;
+  }
+
+  .heroIntro,
+  .heroResolve {
+    top: 14svh;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    transform: none;
+  }
+
+  .heroIntro > p,
+  .heroResolve span {
+    margin-bottom: 1.1rem;
+  }
+
+  .heroIntro h1 {
+    max-width: 22rem;
+    font-size: clamp(3rem, 13.5vw, 4.6rem);
+    line-height: 0.9;
+  }
+
+  .heroIntro > span {
+    max-width: 23rem;
+    margin-top: 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .heroResolve strong {
+    max-width: 22rem;
+    font-size: clamp(2.6rem, 12vw, 4.2rem);
+  }
+
+  .rig {
+    top: auto;
+    right: calc(50% - var(--phone-w) / 2);
+    bottom: 9svh;
+  }
+
+  .scrollCue {
+    right: 1rem;
+    bottom: 2.5rem;
+  }
+
+  .heroProgress {
+    right: 1rem;
+    bottom: 1.25rem;
+    left: 1rem;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .orbitCard {
+    background: #11131c;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .page {
+    --sm-muted: rgba(240, 236, 250, 0.82);
+    --sm-line: rgba(232, 220, 250, 0.34);
+  }
+}
